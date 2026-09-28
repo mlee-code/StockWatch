@@ -172,7 +172,7 @@ O projeto existe também para treinar as práticas abaixo. Ao propor ou implemen
 1. **TDD canônico:** Red → Green → Refactor → Regression em cada incremento, com o teste falhando pelo motivo correto antes da implementação.
 2. **Orientação a objetos e outros paradigmas:** modelagem de domínio orientada a objetos, com uso justificado de estilo funcional (funções puras, imutabilidade) onde ele simplificar regras e testes.
 3. **TUI:** a interface de terminal é o produto; teclado primeiro, estados claros de vazio, erro e sucesso.
-4. **Git:** o humano executa pessoalmente todas as operações Git — staging, commits, branches, merges, rebase e push —, principalmente pelo **lazygit**, como prática deliberada de aprendizado. O agente ajuda com a divisão dos commits, mensagens em Conventional Commits, nomes de branches e explicações, e não executa comandos Git que alterem o repositório. Comandos somente leitura (`git status`, `git log`, `git diff`) são permitidos.
+4. **Git:** o humano praticou staging, commits, branches e push pelo **lazygit** na fundação do repositório. A partir da implementação da v0.1.0 (DECISION-005), o agente cria branches, commits em Conventional Commits e push, dividindo o trabalho em partes; ao fim de cada parte, para e envia ao humano um resumo curto e a lista dos arquivos a ler para entender o que foi feito. Merge no `main` e operações destrutivas (reset, rebase, force push, apagar branches ou commits) exigem autorização explícita do humano.
 5. **Bateria de testes:** unitários, baseados em propriedades, integração com SQLite real, fuzzing e testes de volume, cada tipo com critério de aceitação próprio em `docs/testing/TESTS.md`.
 
 ### Escopo e prazo

@@ -184,3 +184,117 @@ Quando as ferramentas não medirem um cenário relevante ou o custo de execuçã
 
 ## Substituída por
 - Nenhuma.
+
+# DECISION-004 — Primeira versão implementada antes da validação detalhada
+
+## Estado
+- [ ] Proposta
+- [x] Aceita
+- [ ] Rejeitada
+- [ ] Substituída
+- [ ] Obsoleta
+
+## Data
+2026-09-28
+
+## Responsável
+M Lee
+
+## Contexto
+O projeto é genérico e de portfólio; o responsável ainda não tem preferências detalhadas de produto além de `workspace/PROJECT_CONTEXT.md`, cujas hipóteses aprovou integralmente em 2026-09-28.
+
+## Problema
+O loop de proposta exige negociar a proposta até a aprovação exata antes de implementar, mas sem preferências detalhadas a negociação não converge e consome o prazo de dois dias.
+
+## Decisão
+`PROJECT_CONTEXT.md`, com todas as hipóteses confirmadas, é o escopo aprovado da v0.1.0. O agente registra o plano em `workspace/proposals/IMPLEMENTATION_PROPOSAL.md` e implementa a primeira versão sem rodadas prévias de feedback. O responsável valida a versão pronta pela TUI e pelo `VERSION_REVIEW.md`; os ajustes seguem o loop normal de proposta a partir do ciclo seguinte.
+
+## Motivação
+Um produto utilizável gera feedback mais concreto do que uma discussão abstrata.
+
+## Alternativas consideradas
+### Alternativa A
+- Descrição: loop de proposta completo antes da implementação.
+- Vantagens: aderência total ao processo.
+- Desvantagens: negociação sem preferências definidas, com custo alto de prazo.
+- Motivo da rejeição: decisão explícita do responsável.
+
+## Consequências
+### Positivas
+- Versão utilizável dentro do prazo.
+### Negativas
+- Retrabalho possível após a validação.
+### Riscos
+- Divergência entre o que foi implementado e o desejado. Mitigação: escopo restrito ao `PROJECT_CONTEXT.md` e review da versão.
+
+## Documentos afetados
+- `workspace/proposals/IMPLEMENTATION_PROPOSAL.md`, `docs/ROADMAP.md`.
+
+## Código ou módulos afetados
+- Toda a v0.1.0.
+
+## Critério para revisar esta decisão
+Válida somente para a v0.1.0; os ciclos seguintes voltam ao loop de proposta.
+
+## Substitui
+- Nenhuma.
+
+## Substituída por
+- Nenhuma.
+
+# DECISION-005 — Agente executa Git durante a implementação
+
+## Estado
+- [ ] Proposta
+- [x] Aceita
+- [ ] Rejeitada
+- [ ] Substituída
+- [ ] Obsoleta
+
+## Data
+2026-09-28
+
+## Responsável
+M Lee
+
+## Contexto
+A prática deliberada 4 do `AGENTS.md` reservava ao humano todas as operações Git. O responsável praticou staging, commits, branches e push pelo lazygit na fundação do repositório e considera o exercício suficiente.
+
+## Problema
+Exigir que o humano faça cada commit durante toda a implementação atrasa o ciclo sem novo ganho de aprendizado em Git.
+
+## Decisão
+O agente cria branches, commits em Conventional Commits e push durante a v0.1.0, em partes com sentido próprio. Ao fim de cada parte, para e envia um resumo curto e a lista dos arquivos a ler. Merge no `main` e operações destrutivas exigem autorização explícita do humano.
+
+## Motivação
+Mantém o aprendizado no que ainda importa, entender o código produzido, e preserva o controle humano sobre o `main`.
+
+## Alternativas consideradas
+### Alternativa A
+- Descrição: o humano continua fazendo todos os commits.
+- Vantagens: mais prática de Git.
+- Desvantagens: exercício já considerado suficiente; custo alto de prazo.
+- Motivo da rejeição: decisão explícita do responsável.
+
+## Consequências
+### Positivas
+- Histórico TDD (`test:` → `feat:` → `refactor:`) produzido de forma consistente.
+### Negativas
+- Menos prática manual de Git.
+### Riscos
+- Commits além do combinado. Mitigação: parada obrigatória ao fim de cada parte.
+
+## Documentos afetados
+- `AGENTS.md` (prática deliberada 4).
+
+## Código ou módulos afetados
+- Nenhum.
+
+## Critério para revisar esta decisão
+A pedido do responsável.
+
+## Substitui
+- Nenhuma.
+
+## Substituída por
+- Nenhuma.
