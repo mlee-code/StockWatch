@@ -1,0 +1,13 @@
+// Visão resumida: somente entidades e relações
+Table categoria { id integer [pk] }
+Table fornecedor { id integer [pk] }
+Table produto { id integer [pk]
+  categoria_id integer [ref: > categoria.id] }
+Table lote { id integer [pk]
+  produto_id integer [ref: > produto.id]
+  fornecedor_id integer [ref: > fornecedor.id] }
+Table movimentacao { id integer [pk]
+  produto_id integer [ref: > produto.id] }
+Table movimentacao_lote { movimentacao_id integer [ref: > movimentacao.id]
+  lote_id integer [ref: > lote.id] }
+Table configuracao { chave text [pk] }

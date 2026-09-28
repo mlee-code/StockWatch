@@ -1,0 +1,51 @@
+// Projeção do banco do produto (fonte: src/stockwatch/persistencia/migracoes.py, versão 1)
+Project stockwatch { database_type: 'SQLite' }
+
+Table categoria {
+  id integer [pk]
+  nome text [not null, unique, note: 'COLLATE NOCASE, 1-100']
+}
+
+Table fornecedor {
+  id integer [pk]
+  nome text [not null, unique, note: 'COLLATE NOCASE, 1-100']
+}
+
+Table produto {
+  id integer [pk]
+  nome text [not null, unique, note: 'COLLATE NOCASE, 1-100']
+  categoria_id integer [ref: > categoria.id]
+  criado_em text [not null, note: 'ISO 8601 UTC']
+}
+
+Table lote {
+  id integer [pk, note: 'ordem de criação; desempate FEFO']
+  produto_id integer [not null, ref: > produto.id]
+  validade text [not null, note: 'AAAA-MM-DD']
+  fornecedor_id integer [ref: > fornecedor.id]
+  indexes { (produto_id, validade, id) }
+}
+
+Table movimentacao {
+  id integer [pk]
+  tipo text [not null, note: 'entrada | saida']
+  motivo text [note: 'NULL em entrada; venda | perda | descarte_vencimento']
+  produto_id integer [not null, ref: > produto.id]
+  ocorrida_em text [not null, note: 'ISO 8601 UTC']
+  indexes { ocorrida_em }
+}
+
+Table movimentacao_lote {
+  movimentacao_id integer [not null, ref: > movimentacao.id]
+  lote_id integer [not null, ref: > lote.id]
+  quantidade integer [not null, note: '> 0']
+  indexes {
+    (movimentacao_id, lote_id) [pk]
+    lote_id
+  }
+}
+
+Table configuracao {
+  chave text [pk]
+  valor text [not null]
+}
