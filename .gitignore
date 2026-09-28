@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Ambientes e ferramentas
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.benchmarks/
+.coverage
+htmlcov/
+
+# Bancos do produto criados localmente (o metadata/ é versionado)
+*.db
+
+# Editores e sistema
+.idea/
+.vscode/
+.DS_Store
