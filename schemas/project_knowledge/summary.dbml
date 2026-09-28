@@ -1,0 +1,181 @@
+Table projects {
+  project_id text [pk]
+  name text [not null]
+}
+
+Table metadata_configurations {
+  metadata_configuration_id text [pk]
+  project_id text [not null, ref: > projects.project_id]
+  storage_profile text [not null]
+  encryption_scope text [not null]
+  backups_encrypted integer [not null]
+  decided_by_person_id text [ref: > people.person_id]
+  supersedes_configuration_id text [ref: > metadata_configurations.metadata_configuration_id]
+}
+
+Table knowledge_items {
+  knowledge_item_id text [pk]
+  project_id text [not null, ref: > projects.project_id]
+  external_id text [not null]
+  item_type text [not null]
+  source_path text [not null]
+}
+
+Table knowledge_relations {
+  knowledge_relation_id text [pk]
+  source_item_id text [not null, ref: > knowledge_items.knowledge_item_id]
+  target_item_id text [not null, ref: > knowledge_items.knowledge_item_id]
+  relation_type text [not null]
+}
+
+Table architecture_graphs {
+  graph_id text [pk]
+  project_id text [not null, ref: > projects.project_id]
+  version_id text [ref: > versions.version_id]
+  cycle_id text [ref: > development_cycles.cycle_id]
+  graph_scope text [not null]
+  status text [not null]
+  canonical_source text [not null]
+  supersedes_graph_id text [ref: > architecture_graphs.graph_id]
+}
+
+Table graph_nodes {
+  graph_node_id text [pk]
+  graph_id text [not null, ref: > architecture_graphs.graph_id]
+  stable_id text [not null]
+  node_type text [not null]
+  name text [not null]
+  execution_mode text
+}
+
+Table graph_edges {
+  graph_edge_id text [pk]
+  graph_id text [not null, ref: > architecture_graphs.graph_id]
+  source_node_id text [not null, ref: > graph_nodes.graph_node_id]
+  target_node_id text [not null, ref: > graph_nodes.graph_node_id]
+  relation_type text [not null]
+  contract_reference text
+}
+
+Table projection_definitions {
+  projection_id text [pk]
+  project_id text [not null, ref: > projects.project_id]
+  name text [not null]
+  query_text text [not null]
+}
+
+Table versions {
+  version_id text [pk]
+  project_id text [not null, ref: > projects.project_id]
+  version text [not null]
+  commit_hash text [not null]
+}
+
+Table development_cycles {
+  cycle_id text [pk]
+  version_id text [not null, ref: > versions.version_id]
+  parent_cycle_id text [ref: > development_cycles.cycle_id]
+  cycle_type text [not null]
+  objective text [not null]
+}
+
+Table test_run_groups {
+  run_group_id text [pk]
+  cycle_id text [not null, ref: > development_cycles.cycle_id]
+  purpose text [not null]
+}
+
+Table test_runs {
+  test_run_id text [pk]
+  run_group_id text [not null, ref: > test_run_groups.run_group_id]
+  test_definition_id text [ref: > test_definitions.test_definition_id]
+  environment_id text [not null, ref: > environments.environment_id]
+  status text [not null]
+}
+
+Table test_definitions {
+  test_definition_id text [pk]
+  project_id text [not null, ref: > projects.project_id]
+  external_id text [not null]
+  test_type text [not null]
+}
+
+Table environments {
+  environment_id text [pk]
+  fingerprint_sha256 text [not null]
+}
+
+Table test_results {
+  test_result_id text [pk]
+  test_run_id text [not null, ref: > test_runs.test_run_id]
+  status text [not null]
+}
+
+Table performance_metrics {
+  metric_id text [pk]
+  test_run_id text [not null, ref: > test_runs.test_run_id]
+  baseline_metric_id text [ref: > performance_metrics.metric_id]
+  metric_name text [not null]
+  unit text [not null]
+}
+
+Table human_evaluations {
+  human_evaluation_id text [pk]
+  cycle_id text [not null, ref: > development_cycles.cycle_id]
+  test_run_id text [ref: > test_runs.test_run_id]
+  evaluator_person_id text [ref: > people.person_id]
+}
+
+Table version_reviews {
+  version_review_id text [pk]
+  version_id text [not null, ref: > versions.version_id]
+  cycle_id text [ref: > development_cycles.cycle_id]
+  evaluator_person_id text [ref: > people.person_id]
+  score integer [not null]
+  decision text [not null]
+}
+
+Table review_findings {
+  review_finding_id text [pk]
+  version_review_id text [not null, ref: > version_reviews.version_review_id]
+  finding_type text [not null]
+  formalized_knowledge_item_id text [ref: > knowledge_items.knowledge_item_id]
+}
+
+Table change_requests {
+  change_request_id text [pk]
+  project_id text [not null, ref: > projects.project_id]
+  version_id text [ref: > versions.version_id]
+  request_type text [not null]
+}
+
+Table change_proposals {
+  proposal_id text [pk]
+  change_request_id text [not null, ref: > change_requests.change_request_id]
+  status text [not null]
+}
+
+Table proposal_revisions {
+  proposal_revision_id text [pk]
+  proposal_id text [not null, ref: > change_proposals.proposal_id]
+  revision_number integer [not null]
+  content_sha256 text [not null]
+}
+
+Table proposal_approvals {
+  proposal_approval_id text [pk]
+  proposal_revision_id text [not null, ref: > proposal_revisions.proposal_revision_id]
+  approved_by_person_id text [not null, ref: > people.person_id]
+}
+
+Table people {
+  person_id text [pk]
+  pseudonym text [not null]
+}
+
+Table artifacts {
+  artifact_id text [pk]
+  cycle_id text [ref: > development_cycles.cycle_id]
+  test_run_id text [ref: > test_runs.test_run_id]
+  uri text [not null]
+}
