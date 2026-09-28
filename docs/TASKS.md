@@ -6,7 +6,7 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 - [x] TASK-001 — Arquivos de higiene do repositório. Fonte: ENGINEERING_PRACTICES. Teste: presença no commit `fb4ccbc`.
 - [x] TASK-002 — Pacote Python, dependências, ruff e mypy. Fonte: ARCHITECTURE "Tecnologias". Teste: `ruff`/`mypy` sem erros.
 - [x] TASK-003 — TUI inicial que abre e fecha. Fonte: REQ-009 (parcial), NFR-001. Teste: TEST-TUI-001.
-- [ ] TASK-004 — CI no GitHub Actions. Fonte: ENGINEERING_PRACTICES "CI/CD". Teste: workflow verde no GitHub.
+- [x] TASK-004 — CI no GitHub Actions. Fonte: ENGINEERING_PRACTICES "CI/CD". Teste: workflow verde no GitHub (run 36500216951).
 - [ ] TASK-005 — Documentação técnica da v0.1.0. Fonte: PROP-001. Teste: revisão humana.
 - [x] TASK-006 — Guard rail de arquitetura. Fonte: ARCHITECTURE "Guard rails". Teste: SUITE-ARQ.
 
