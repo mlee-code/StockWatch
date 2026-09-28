@@ -298,3 +298,66 @@ A pedido do responsável.
 
 ## Substituída por
 - Nenhuma.
+
+# DECISION-006 — Documentos condicionais e práticas omitidas na v0.1.0
+
+## Estado
+- [ ] Proposta
+- [x] Aceita
+- [ ] Rejeitada
+- [ ] Substituída
+- [ ] Obsoleta
+
+## Data
+2026-09-28
+
+## Responsável
+M Lee (delegado ao agente por DECISION-004)
+
+## Contexto
+O modelo documental pede avaliar documentos condicionais e registrar as omissões. O prazo é de um ciclo.
+
+## Problema
+Criar documentos sem uso real diluiria as fontes oficiais e consumiria o prazo.
+
+## Decisão
+- `PERFORMANCE_TESTS.md`: omitido; critérios em `TESTS.md` (SUITE-VOL, SUITE-DES) e NFR-003.
+- `ACCESSIBILITY_REVIEWS.md`: omitido; a acessibilidade relevante é teclado e texto além da cor (NFR-001, `UX_UI.md`), verificada pela SUITE-TUI.
+- `SECURITY_REVIEWS.md`: omitido; sem rede, sem autenticação e sem dados sensíveis. Controles em `ENGINEERING_PRACTICES.md`.
+- `DEPLOYMENT.md`, `OPERATIONS.md`: omitidos; a instalação é local por `pipx`, documentada no README.
+- `RELEASE_VALIDATION.md`: omitido; os critérios de conclusão estão em `ROADMAP.md` e a validação humana no `VERSION_REVIEW.md`.
+- `GLOSSARY.md`, `STYLE.md`, `EXAMPLES.md`: omitidos; os termos do domínio estão definidos em `REQUIREMENTS.md` e o estilo em `ENGINEERING_PRACTICES.md`.
+- Containerização e testes de mutação: desvios PRACTICE-DEV-001 e 002.
+
+## Motivação
+Proporcionalidade exigida pelo `AGENTS.md`; o rigor dos testes é mantido.
+
+## Alternativas consideradas
+### Alternativa A
+- Descrição: criar todos os documentos do modelo.
+- Vantagens: aderência formal completa.
+- Desvantagens: documentos vazios ou duplicados.
+- Motivo da rejeição: violaria a unicidade de fontes.
+
+## Consequências
+### Positivas
+- Menos documentos, cada um com conteúdo real.
+### Negativas
+- Revisões de segurança e acessibilidade menos formais.
+### Riscos
+- Surgir um requisito que exija o documento omitido. Mitigação: reavaliar no review da versão.
+
+## Documentos afetados
+- `docs/execution/EXECUTION_MODEL.md` ("Documentos omitidos").
+
+## Código ou módulos afetados
+- Nenhum.
+
+## Critério para revisar esta decisão
+Rede, múltiplos usuários, dados sensíveis ou distribuição pública em larga escala.
+
+## Substitui
+- Nenhuma.
+
+## Substituída por
+- Nenhuma.
