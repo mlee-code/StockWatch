@@ -52,7 +52,7 @@ stockwatch/
 Cadastro de produto (categoria opcional); entrada com quantidade, validade e fornecedor opcional; saída com motivo; estoque atual; validades com alerta; configuração de N; histórico de movimentações; painel inicial com resumo e alertas.
 
 ### Não incluído
-Exclusão de produtos, edição e exclusão de movimentações (a edição de produtos entrou por DECISION-009), estorno, relatórios, importação e exportação, múltiplos usuários, rede e integração com PDV. Uma correção de movimentação será feita por movimentação compensatória num ciclo futuro.
+Edição e exclusão de produtos e de movimentações, estorno, relatórios, importação e exportação, múltiplos usuários, rede e integração com PDV. Uma correção de movimentação será feita por movimentação compensatória num ciclo futuro.
 
 ## Estrutura de dados proposta
 
