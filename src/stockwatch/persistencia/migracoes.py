@@ -31,7 +31,7 @@ CREATE TABLE produto (
 CREATE TABLE lote (
     id INTEGER PRIMARY KEY,
     produto_id INTEGER NOT NULL REFERENCES produto(id),
-    validade TEXT NOT NULL CHECK (validade = date(validade)),
+    validade TEXT NOT NULL CHECK (validade IS date(validade)),
     fornecedor_id INTEGER REFERENCES fornecedor(id)
 );
 CREATE INDEX idx_lote_fefo ON lote(produto_id, validade, id);

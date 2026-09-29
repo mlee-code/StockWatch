@@ -1,24 +1,43 @@
 """Adaptadores SQLite das portas da aplicação."""
 
 import sqlite3
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from types import TracebackType
-from typing import Self
+from typing import Literal, Self
 
-from stockwatch.aplicacao.dtos import ResumoProduto
+from stockwatch.aplicacao.dtos import ItemEstoque, ResumoProduto
+from stockwatch.dominio.estoque import Lote, LoteComSaldo, Movimentacao
 from stockwatch.dominio.produto import Produto
 from stockwatch.dominio.valores import NomeValido
 from stockwatch.persistencia.migracoes import migrar
 
-_SALDO_POR_PRODUTO = """
-SELECT l.produto_id,
-       SUM(CASE m.tipo WHEN 'entrada' THEN ml.quantidade ELSE -ml.quantidade END) AS saldo
-FROM movimentacao_lote ml
-JOIN movimentacao m ON m.id = ml.movimentacao_id
-JOIN lote l ON l.id = ml.lote_id
-GROUP BY l.produto_id
+# Saldo de cada lote, derivado das movimentações (DATA_MODEL.md, "Derivações").
+_SALDO_LOTE = """
+saldo_lote AS (
+    SELECT ml.lote_id,
+           SUM(CASE m.tipo WHEN 'entrada' THEN ml.quantidade ELSE -ml.quantidade END) AS saldo
+    FROM movimentacao_lote ml
+    JOIN movimentacao m ON m.id = ml.movimentacao_id
+    GROUP BY ml.lote_id
+)
 """
+
+
+def _nome_ou_nada(texto: str | None) -> NomeValido | None:
+    return NomeValido(texto) if texto else None
+
+
+def _id_por_nome(
+    conexao: sqlite3.Connection, tabela: Literal["categoria", "fornecedor"], nome: NomeValido
+) -> int:
+    """Busca pelo nome normalizado ou cria a linha (categoria e fornecedor são reaproveitados)."""
+    conexao.execute(
+        f"INSERT INTO {tabela} (nome, nome_chave) VALUES (?, ?) ON CONFLICT DO NOTHING",
+        (nome.valor, nome.chave),
+    )
+    linha = conexao.execute(f"SELECT id FROM {tabela} WHERE nome_chave = ?", (nome.chave,))
+    return int(linha.fetchone()[0])
 
 
 class BancoSqlite:
@@ -42,6 +61,8 @@ class UnidadeDeTrabalhoSqlite:
     def __init__(self, conexao: sqlite3.Connection) -> None:
         self._conexao = conexao
         self.produtos = RepositorioProdutosSqlite(conexao)
+        self.lotes = RepositorioLotesSqlite(conexao)
+        self.movimentacoes = RepositorioMovimentacoesSqlite(conexao)
 
     def __enter__(self) -> Self:
         self._conexao.execute("BEGIN")
@@ -65,7 +86,7 @@ class RepositorioProdutosSqlite:
         self._conexao = conexao
 
     def adicionar(self, nome: NomeValido, categoria: NomeValido | None) -> Produto:
-        categoria_id = self._id_categoria(categoria) if categoria else None
+        categoria_id = _id_por_nome(self._conexao, "categoria", categoria) if categoria else None
         cursor = self._conexao.execute(
             "INSERT INTO produto (nome, nome_chave, categoria_id, criado_em) VALUES (?, ?, ?, ?)",
             (nome.valor, nome.chave, categoria_id, datetime.now(UTC).isoformat()),
@@ -84,30 +105,99 @@ class RepositorioProdutosSqlite:
         ).fetchone()
         if linha is None:
             return None
-        return Produto(
-            id=linha[0],
-            nome=NomeValido(linha[1]),
-            categoria=NomeValido(linha[2]) if linha[2] else None,
-        )
+        return Produto(id=linha[0], nome=NomeValido(linha[1]), categoria=_nome_ou_nada(linha[2]))
 
     def listar_resumos(self) -> list[ResumoProduto]:
         linhas = self._conexao.execute(
             f"""
-            SELECT p.id, p.nome, c.nome, COALESCE(s.saldo, 0)
+            WITH {_SALDO_LOTE}
+            SELECT p.id, p.nome, c.nome, COALESCE(SUM(s.saldo), 0)
             FROM produto p
             LEFT JOIN categoria c ON c.id = p.categoria_id
-            LEFT JOIN ({_SALDO_POR_PRODUTO}) s ON s.produto_id = p.id
+            LEFT JOIN lote l ON l.produto_id = p.id
+            LEFT JOIN saldo_lote s ON s.lote_id = l.id
+            GROUP BY p.id
             ORDER BY p.nome_chave
             """
         ).fetchall()
         return [ResumoProduto(id=i, nome=n, categoria=c, saldo=s) for i, n, c, s in linhas]
 
-    def _id_categoria(self, nome: NomeValido) -> int:
-        self._conexao.execute(
-            "INSERT INTO categoria (nome, nome_chave) VALUES (?, ?) ON CONFLICT DO NOTHING",
-            (nome.valor, nome.chave),
+
+class RepositorioLotesSqlite:
+    def __init__(self, conexao: sqlite3.Connection) -> None:
+        self._conexao = conexao
+
+    def adicionar(self, produto_id: int, validade: date, fornecedor: NomeValido | None) -> Lote:
+        fornecedor_id = (
+            _id_por_nome(self._conexao, "fornecedor", fornecedor) if fornecedor else None
         )
-        linha = self._conexao.execute(
-            "SELECT id FROM categoria WHERE nome_chave = ?", (nome.chave,)
-        ).fetchone()
-        return int(linha[0])
+        cursor = self._conexao.execute(
+            "INSERT INTO lote (produto_id, validade, fornecedor_id) VALUES (?, ?, ?)",
+            (produto_id, validade.isoformat(), fornecedor_id),
+        )
+        assert cursor.lastrowid is not None
+        return Lote(cursor.lastrowid, produto_id, validade, fornecedor)
+
+    def com_saldo(self, produto_id: int) -> list[LoteComSaldo]:
+        linhas = self._conexao.execute(
+            """
+            SELECT l.id, l.validade, f.nome,
+                   (SELECT SUM(CASE m.tipo WHEN 'entrada' THEN ml.quantidade
+                                           ELSE -ml.quantidade END)
+                    FROM movimentacao_lote ml
+                    JOIN movimentacao m ON m.id = ml.movimentacao_id
+                    WHERE ml.lote_id = l.id) AS saldo
+            FROM lote l
+            LEFT JOIN fornecedor f ON f.id = l.fornecedor_id
+            WHERE l.produto_id = ? AND saldo > 0
+            ORDER BY l.validade, l.id
+            """,
+            (produto_id,),
+        ).fetchall()
+        return [
+            LoteComSaldo(
+                Lote(lote_id, produto_id, date.fromisoformat(validade), _nome_ou_nada(fornecedor)),
+                saldo,
+            )
+            for lote_id, validade, fornecedor, saldo in linhas
+        ]
+
+    def resumo_estoque(self) -> list[ItemEstoque]:
+        linhas = self._conexao.execute(
+            f"""
+            WITH {_SALDO_LOTE}
+            SELECT p.id, p.nome, SUM(s.saldo), MIN(l.validade)
+            FROM saldo_lote s
+            JOIN lote l ON l.id = s.lote_id
+            JOIN produto p ON p.id = l.produto_id
+            WHERE s.saldo > 0
+            GROUP BY p.id
+            ORDER BY p.nome_chave
+            """
+        ).fetchall()
+        return [
+            ItemEstoque(produto_id=i, produto=n, saldo=s, proxima_validade=date.fromisoformat(v))
+            for i, n, s, v in linhas
+        ]
+
+
+class RepositorioMovimentacoesSqlite:
+    def __init__(self, conexao: sqlite3.Connection) -> None:
+        self._conexao = conexao
+
+    def registrar(self, movimentacao: Movimentacao) -> int:
+        cursor = self._conexao.execute(
+            "INSERT INTO movimentacao (tipo, motivo, produto_id, ocorrida_em) VALUES (?, ?, ?, ?)",
+            (
+                movimentacao.tipo.value,
+                movimentacao.motivo.value if movimentacao.motivo else None,
+                movimentacao.produto_id,
+                movimentacao.ocorrida_em.astimezone(UTC).isoformat(),
+            ),
+        )
+        assert cursor.lastrowid is not None
+        self._conexao.executemany(
+            "INSERT INTO movimentacao_lote (movimentacao_id, lote_id, quantidade) VALUES (?, ?, ?)",
+            [(cursor.lastrowid, c.lote_id, c.quantidade) for c in movimentacao.linhas],
+        )
+        return cursor.lastrowid

@@ -11,6 +11,9 @@ from stockwatch.dominio.valores import NomeValido
 from stockwatch.persistencia.sqlite import BancoSqlite
 
 AGORA = datetime(2026, 9, 29, 12, 0, tzinfo=UTC)
+NOVA_MOVIMENTACAO = (
+    "INSERT INTO movimentacao (tipo, motivo, produto_id, ocorrida_em) VALUES (?, ?, 1, 'x')"
+)
 
 
 def _servico(banco: BancoSqlite) -> ServicoEstoque:
@@ -86,15 +89,15 @@ def test_falha_no_meio_da_entrada_nao_deixa_lote(banco: BancoSqlite) -> None:
         ("INSERT INTO lote (produto_id, validade) VALUES (1, ?)", ("31/10/2026",)),
         ("INSERT INTO lote (produto_id, validade) VALUES (999, ?)", ("2026-10-01",)),
         (
-            "INSERT INTO movimentacao (tipo, motivo, produto_id, ocorrida_em) VALUES (?, ?, 1, 'x')",
+            NOVA_MOVIMENTACAO,
             ("entrada", "venda"),
         ),
         (
-            "INSERT INTO movimentacao (tipo, motivo, produto_id, ocorrida_em) VALUES (?, ?, 1, 'x')",
+            NOVA_MOVIMENTACAO,
             ("saida", None),
         ),
         (
-            "INSERT INTO movimentacao (tipo, motivo, produto_id, ocorrida_em) VALUES (?, ?, 1, 'x')",
+            NOVA_MOVIMENTACAO,
             ("saida", "roubo"),
         ),
     ],

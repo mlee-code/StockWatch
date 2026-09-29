@@ -29,7 +29,7 @@ Este documento trata só do banco do produto. A fonte canônica do esquema físi
 | | `criado_em` | TEXT | ISO 8601 UTC |
 | `lote` | `id` | INTEGER PK | ordem de criação; desempate FEFO (H4) |
 | | `produto_id` | INTEGER | FK `produto`, NOT NULL |
-| | `validade` | TEXT | ISO `AAAA-MM-DD`, NOT NULL, CHECK `validade = date(validade)` |
+| | `validade` | TEXT | ISO `AAAA-MM-DD`, NOT NULL, CHECK `validade IS date(validade)` (com `=`, um texto inválido gera NULL e o CHECK passaria) |
 | | `fornecedor_id` | INTEGER | FK `fornecedor`, NULL permitido |
 | `movimentacao` | `id` | INTEGER PK | |
 | | `tipo` | TEXT | CHECK `entrada` ou `saida` |
