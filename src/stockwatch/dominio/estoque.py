@@ -35,12 +35,18 @@ class MotivoSaida(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class Lote:
-    """Unidades de um produto que entraram juntas, com a mesma validade (CON-008)."""
+    """Unidades de um produto que entraram juntas; validade None não vence (CON-008)."""
 
     id: int
     produto_id: int
-    validade: date
+    validade: date | None
     fornecedor: NomeValido | None = None
+
+
+def ordem_fefo(lote: Lote) -> tuple[bool, date, int]:
+    """Chave FEFO: validade mais próxima primeiro, sem validade por último,
+    e lote mais antigo no empate (REQ-004 CA-2, H4, DECISION-007)."""
+    return (lote.validade is None, lote.validade or date.max, lote.id)
 
 
 @dataclass(frozen=True, slots=True)

@@ -3,6 +3,11 @@
 Cada item de MIGRACOES leva o banco da versão i para i + 1, controlada por
 `PRAGMA user_version`. Migrações publicadas nunca são alteradas; mudanças
 entram como uma nova migração no fim da lista.
+
+Alterações de coluna seguem o procedimento oficial do SQLite
+(https://www.sqlite.org/lang_altertable.html, "Making Other Kinds Of Table
+Schema Changes"): chaves estrangeiras desligadas, tabela nova, cópia, troca
+de nomes e `PRAGMA foreign_key_check` antes do COMMIT.
 """
 
 import sqlite3
@@ -61,22 +66,49 @@ CREATE TABLE configuracao (
 INSERT INTO configuracao (chave, valor) VALUES ('dias_alerta', '30');
 """
 
-MIGRACOES: tuple[str, ...] = (_V1,)
+# DECISION-007: validade opcional no lote.
+_V2 = """
+CREATE TABLE lote_nova (
+    id INTEGER PRIMARY KEY,
+    produto_id INTEGER NOT NULL REFERENCES produto(id),
+    validade TEXT CHECK (validade IS NULL OR validade IS date(validade)),
+    fornecedor_id INTEGER REFERENCES fornecedor(id)
+);
+INSERT INTO lote_nova (id, produto_id, validade, fornecedor_id)
+    SELECT id, produto_id, validade, fornecedor_id FROM lote;
+DROP TABLE lote;
+ALTER TABLE lote_nova RENAME TO lote;
+CREATE INDEX idx_lote_fefo ON lote(produto_id, validade, id);
+"""
+
+MIGRACOES: tuple[str, ...] = (_V1, _V2)
 
 
 def migrar(conexao: sqlite3.Connection, migracoes: tuple[str, ...] = MIGRACOES) -> None:
     """Aplica, cada uma em sua transação, as migrações pendentes."""
     versao: int = conexao.execute("PRAGMA user_version").fetchone()[0]
-    for numero, script in enumerate(migracoes[versao:], start=versao + 1):
-        conexao.execute("BEGIN")
-        try:
-            for comando in _comandos(script):
-                conexao.execute(comando)
-            conexao.execute(f"PRAGMA user_version = {numero}")
-            conexao.execute("COMMIT")
-        except BaseException:
-            conexao.execute("ROLLBACK")
-            raise
+    chaves_ativas: int = conexao.execute("PRAGMA foreign_keys").fetchone()[0]
+    # Só tem efeito fora de transação; reconstruir tabelas exige as FKs desligadas.
+    conexao.execute("PRAGMA foreign_keys = OFF")
+    try:
+        for numero, script in enumerate(migracoes[versao:], start=versao + 1):
+            _aplicar(conexao, numero, script)
+    finally:
+        conexao.execute(f"PRAGMA foreign_keys = {'ON' if chaves_ativas else 'OFF'}")
+
+
+def _aplicar(conexao: sqlite3.Connection, numero: int, script: str) -> None:
+    conexao.execute("BEGIN")
+    try:
+        for comando in _comandos(script):
+            conexao.execute(comando)
+        if conexao.execute("PRAGMA foreign_key_check").fetchall():
+            raise sqlite3.IntegrityError(f"A migração {numero} violaria chaves estrangeiras.")
+        conexao.execute(f"PRAGMA user_version = {numero}")
+        conexao.execute("COMMIT")
+    except BaseException:
+        conexao.execute("ROLLBACK")
+        raise
 
 
 def _comandos(script: str) -> list[str]:

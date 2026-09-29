@@ -34,7 +34,7 @@ class ResumoEntrada:
     produto: str
     lote_id: int
     quantidade: int
-    validade: date
+    validade: date | None
     saldo: int
 
 
@@ -45,7 +45,7 @@ class ItemEstoque:
     produto_id: int
     produto: str
     saldo: int
-    proxima_validade: date
+    proxima_validade: date | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,7 +53,7 @@ class SaldoLote:
     """Lote com saldo positivo, para o detalhe de um produto (REQ-005 CA-2)."""
 
     lote_id: int
-    validade: date
+    validade: date | None
     fornecedor: str | None
     saldo: int
 

@@ -6,7 +6,13 @@ from types import TracebackType
 from typing import Self
 
 from stockwatch.aplicacao.dtos import ItemEstoque, ResumoProduto
-from stockwatch.dominio.estoque import Lote, LoteComSaldo, Movimentacao, TipoMovimentacao
+from stockwatch.dominio.estoque import (
+    Lote,
+    LoteComSaldo,
+    Movimentacao,
+    TipoMovimentacao,
+    ordem_fefo,
+)
 from stockwatch.dominio.produto import Produto
 from stockwatch.dominio.valores import NomeValido
 
@@ -64,7 +70,9 @@ class RepositorioLotesEmMemoria:
     def __init__(self, uow: "UnidadeDeTrabalhoEmMemoria") -> None:
         self._uow = uow
 
-    def adicionar(self, produto_id: int, validade: date, fornecedor: NomeValido | None) -> Lote:
+    def adicionar(
+        self, produto_id: int, validade: date | None, fornecedor: NomeValido | None
+    ) -> Lote:
         lotes = self._uow.estado.lotes
         lote = Lote(len(lotes) + 1, produto_id, validade, fornecedor)
         lotes[lote.id] = lote
@@ -74,7 +82,7 @@ class RepositorioLotesEmMemoria:
         estado = self._uow.estado
         lotes = sorted(
             (lote for lote in estado.lotes.values() if lote.produto_id == produto_id),
-            key=lambda lote: (lote.validade, lote.id),
+            key=ordem_fefo,
         )
         com_saldo = (LoteComSaldo(lote, estado.saldo_do_lote(lote.id)) for lote in lotes)
         return [item for item in com_saldo if item.saldo > 0]

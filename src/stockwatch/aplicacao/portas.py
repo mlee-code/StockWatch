@@ -21,10 +21,12 @@ class RepositorioProdutos(Protocol):
 
 
 class RepositorioLotes(Protocol):
-    def adicionar(self, produto_id: int, validade: date, fornecedor: NomeValido | None) -> Lote: ...
+    def adicionar(
+        self, produto_id: int, validade: date | None, fornecedor: NomeValido | None
+    ) -> Lote: ...
 
     def com_saldo(self, produto_id: int) -> list[LoteComSaldo]:
-        """Lotes do produto com saldo > 0, por validade e, no empate, por criação (H4)."""
+        """Lotes do produto com saldo > 0, na ordem de `ordem_fefo`."""
         ...
 
     def resumo_estoque(self) -> list[ItemEstoque]:

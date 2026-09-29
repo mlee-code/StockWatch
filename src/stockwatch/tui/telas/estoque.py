@@ -8,7 +8,7 @@ from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header, Label, Static
 
 from stockwatch.aplicacao.servico import ServicoEstoque
-from stockwatch.tui.formatos import data_br
+from stockwatch.tui.formatos import validade_br
 
 
 class TelaEstoque(Screen[None]):
@@ -45,7 +45,7 @@ class TelaEstoque(Screen[None]):
             estoque.add_row(
                 item.produto,
                 str(item.saldo),
-                data_br(item.proxima_validade),
+                validade_br(item.proxima_validade),
                 key=str(item.produto_id),
             )
         self.query_one("#vazio").display = not itens
@@ -59,4 +59,4 @@ class TelaEstoque(Screen[None]):
         lotes = self.query_one("#lotes", DataTable)
         lotes.clear()
         for lote in self._servico.lotes_do_produto(int(evento.row_key.value)):
-            lotes.add_row(data_br(lote.validade), lote.fornecedor or "—", str(lote.saldo))
+            lotes.add_row(validade_br(lote.validade), lote.fornecedor or "—", str(lote.saldo))

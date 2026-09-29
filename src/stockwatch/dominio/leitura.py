@@ -35,3 +35,8 @@ def ler_data(texto: str) -> date:
         return date(int(ano), int(mes), int(dia))
     except ValueError:
         raise DataInvalida(f"A data “{limpo}” não existe.") from None
+
+
+def ler_data_opcional(texto: str) -> date | None:
+    """Validade opcional: em branco, o lote não vence (DECISION-007)."""
+    return ler_data(texto) if texto.strip() else None

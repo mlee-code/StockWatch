@@ -48,7 +48,11 @@ class ServicoEstoque:
             return uow.produtos.listar_resumos()
 
     def registrar_entrada(
-        self, produto: str, quantidade: int, validade: date, fornecedor: str | None = None
+        self,
+        produto: str,
+        quantidade: int,
+        validade: date | None,
+        fornecedor: str | None = None,
     ) -> ResumoEntrada:
         """REQ-003: cria um lote e a movimentação de entrada que o abastece."""
         nome = NomeValido(produto)

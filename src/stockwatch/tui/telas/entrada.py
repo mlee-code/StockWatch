@@ -11,8 +11,8 @@ from textual.widgets import Footer, Header, Input, Label
 
 from stockwatch.aplicacao.servico import ServicoEstoque
 from stockwatch.dominio.erros import ErroDominio
-from stockwatch.dominio.leitura import ler_data, ler_quantidade
-from stockwatch.tui.formatos import data_br
+from stockwatch.dominio.leitura import ler_data_opcional, ler_quantidade
+from stockwatch.tui.formatos import validade_br
 from stockwatch.tui.mensagem import LinhaMensagem
 
 
@@ -36,7 +36,7 @@ class TelaEntrada(Screen[None]):
             yield Input(id="produto", suggester=SuggestFromList(nomes, case_sensitive=False))
             yield Label("Quantidade")
             yield Input(id="quantidade", placeholder="unidades inteiras")
-            yield Label("Validade")
+            yield Label("Validade (em branco: não vence)")
             yield Input(id="validade", placeholder="DD/MM/AAAA")
             yield Label("Fornecedor (opcional)")
             yield Input(id="fornecedor")
@@ -52,15 +52,18 @@ class TelaEntrada(Screen[None]):
             resumo = self._servico.registrar_entrada(
                 valor["produto"],
                 ler_quantidade(valor["quantidade"]),
-                ler_data(valor["validade"]),
+                ler_data_opcional(valor["validade"]),
                 valor["fornecedor"],
             )
         except ErroDominio as erro:
             self.query_one(LinhaMensagem).erro(str(erro))
         else:
+            validade = validade_br(resumo.validade)
+            if resumo.validade:
+                validade = f"validade {validade}"
             self.query_one(LinhaMensagem).sucesso(
                 f"Entrada de {resumo.quantidade} un. de {resumo.produto} "
-                f"(validade {data_br(resumo.validade)}). Saldo: {resumo.saldo}."
+                f"({validade}). Saldo: {resumo.saldo}."
             )
             for campo in self.query(Input):
                 campo.clear()

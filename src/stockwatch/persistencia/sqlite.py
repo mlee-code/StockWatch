@@ -28,6 +28,10 @@ def _nome_ou_nada(texto: str | None) -> NomeValido | None:
     return NomeValido(texto) if texto else None
 
 
+def _data_ou_nada(texto: str | None) -> date | None:
+    return date.fromisoformat(texto) if texto else None
+
+
 def _id_por_nome(
     conexao: sqlite3.Connection, tabela: Literal["categoria", "fornecedor"], nome: NomeValido
 ) -> int:
@@ -127,13 +131,15 @@ class RepositorioLotesSqlite:
     def __init__(self, conexao: sqlite3.Connection) -> None:
         self._conexao = conexao
 
-    def adicionar(self, produto_id: int, validade: date, fornecedor: NomeValido | None) -> Lote:
+    def adicionar(
+        self, produto_id: int, validade: date | None, fornecedor: NomeValido | None
+    ) -> Lote:
         fornecedor_id = (
             _id_por_nome(self._conexao, "fornecedor", fornecedor) if fornecedor else None
         )
         cursor = self._conexao.execute(
             "INSERT INTO lote (produto_id, validade, fornecedor_id) VALUES (?, ?, ?)",
-            (produto_id, validade.isoformat(), fornecedor_id),
+            (produto_id, validade.isoformat() if validade else None, fornecedor_id),
         )
         assert cursor.lastrowid is not None
         return Lote(cursor.lastrowid, produto_id, validade, fornecedor)
@@ -150,13 +156,13 @@ class RepositorioLotesSqlite:
             FROM lote l
             LEFT JOIN fornecedor f ON f.id = l.fornecedor_id
             WHERE l.produto_id = ? AND saldo > 0
-            ORDER BY l.validade, l.id
+            ORDER BY l.validade IS NULL, l.validade, l.id
             """,
             (produto_id,),
         ).fetchall()
         return [
             LoteComSaldo(
-                Lote(lote_id, produto_id, date.fromisoformat(validade), _nome_ou_nada(fornecedor)),
+                Lote(lote_id, produto_id, _data_ou_nada(validade), _nome_ou_nada(fornecedor)),
                 saldo,
             )
             for lote_id, validade, fornecedor, saldo in linhas
@@ -176,7 +182,7 @@ class RepositorioLotesSqlite:
             """
         ).fetchall()
         return [
-            ItemEstoque(produto_id=i, produto=n, saldo=s, proxima_validade=date.fromisoformat(v))
+            ItemEstoque(produto_id=i, produto=n, saldo=s, proxima_validade=_data_ou_nada(v))
             for i, n, s, v in linhas
         ]
 
