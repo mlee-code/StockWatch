@@ -23,3 +23,6 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 - [x] TASK-023 — Repositórios SQLite de lotes e movimentações. Fonte: DATA_MODEL. Testes: TEST-INT-020 a 025.
 - [x] TASK-024 — Telas de entrada e de estoque. Fonte: REQ-003, 005, UX_UI. Testes: TEST-TUI-010 a 022.
 - [x] TASK-025 — Validade opcional no lote e migração 2. Fonte: FR-001, DECISION-007. Testes: TEST-UNIT-034, 035, 049, 057; TEST-INT-030 a 032; TEST-TUI-013, 017, 023.
+
+## V010-09 — Modos normal e inserção
+- [x] TASK-090 — TelaModal, CampoTexto e TabelaVim; telas de produtos, entrada e estoque migradas. Fonte: FR-002, DECISION-008, UX_UI. Testes: TEST-TUI-030 a 038.

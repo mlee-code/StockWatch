@@ -83,6 +83,7 @@ Cada arquivo de teste identifica seus casos como `TEST-<SUITE>-NNN` na docstring
 | TEST-INT-001 a 010 | migração, transações, unicidade e persistência de produtos | `tests/integracao/test_produtos_sqlite.py` |
 | TEST-INT-011 | fluxo TUI → SQLite com reinício | `tests/integracao/test_fluxo_produtos.py` |
 | TEST-INT-012 | rollback de migração com erro | `tests/integracao/test_migracoes.py` |
+| TEST-TUI-030 a 038 | modos normal e inserção (DECISION-008) | `tests/tui/test_modos.py` |
 | TEST-ARQ-001, 002 | camadas e dependências | `tests/arquitetura/test_dependencias.py` |
 
 ## Portões por parte
