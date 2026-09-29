@@ -39,3 +39,7 @@ class SaldoInsuficiente(ErroDominio):
 
 class MotivoInvalido(ErroDominio):
     """Motivo de saída fora de venda, perda ou descarte por vencimento."""
+
+
+class ProdutoComMovimentacoes(ErroDominio):
+    """Produto com histórico não pode ser excluído (DECISION-010)."""

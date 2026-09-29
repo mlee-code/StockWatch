@@ -53,7 +53,7 @@ class RepositorioProdutosEmMemoria:
 
     def adicionar(self, nome: NomeValido, categoria: NomeValido | None) -> Produto:
         produtos = self._uow.estado.produtos
-        produto = Produto(id=len(produtos) + 1, nome=nome, categoria=categoria)
+        produto = Produto(id=max(produtos, default=0) + 1, nome=nome, categoria=categoria)
         produtos[produto.id] = produto
         return produto
 
@@ -65,6 +65,12 @@ class RepositorioProdutosEmMemoria:
 
     def atualizar(self, produto: Produto) -> None:
         self._uow.estado.produtos[produto.id] = produto
+
+    def possui_movimentacoes(self, produto_id: int) -> bool:
+        return any(m.produto_id == produto_id for m in self._uow.estado.movimentacoes)
+
+    def remover(self, produto_id: int) -> None:
+        del self._uow.estado.produtos[produto_id]
 
     def listar_resumos(self) -> list[ResumoProduto]:
         estado = self._uow.estado

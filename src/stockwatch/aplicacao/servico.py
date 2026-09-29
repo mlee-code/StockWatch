@@ -11,7 +11,11 @@ from stockwatch.aplicacao.dtos import (
     SaldoLote,
 )
 from stockwatch.aplicacao.portas import UnidadeDeTrabalho
-from stockwatch.dominio.erros import ProdutoDuplicado, ProdutoInexistente
+from stockwatch.dominio.erros import (
+    ProdutoComMovimentacoes,
+    ProdutoDuplicado,
+    ProdutoInexistente,
+)
 from stockwatch.dominio.estoque import MotivoSaida, Movimentacao, TipoMovimentacao
 from stockwatch.dominio.fefo import planejar_saida
 from stockwatch.dominio.produto import Produto
@@ -67,6 +71,21 @@ class ServicoEstoque:
             saldo = sum(item.saldo for item in uow.lotes.com_saldo(produto_id))
             uow.confirmar()
         return ResumoProduto.de(editado, saldo=saldo)
+
+    def excluir_produto(self, produto_id: int) -> str:
+        """REQ-013: exclui cadastro sem uso; devolve o nome excluído."""
+        with self._nova_unidade() as uow:
+            produto = uow.produtos.buscar_por_id(produto_id)
+            if produto is None:
+                raise ProdutoInexistente("O produto não existe mais.")
+            if uow.produtos.possui_movimentacoes(produto_id):
+                raise ProdutoComMovimentacoes(
+                    f"“{produto.nome}” tem movimentações e não pode ser excluído: "
+                    "o histórico seria perdido."
+                )
+            uow.produtos.remover(produto_id)
+            uow.confirmar()
+        return produto.nome.valor
 
     def listar_produtos(self) -> list[ResumoProduto]:
         """REQ-002."""
