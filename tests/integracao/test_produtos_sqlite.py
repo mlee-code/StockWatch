@@ -45,9 +45,14 @@ def test_sem_confirmar_nada_e_gravado(banco: BancoSqlite) -> None:
 
 def test_excecao_dentro_da_unidade_faz_rollback(banco: BancoSqlite) -> None:
     """TEST-INT-005 / DT-007: exceção no meio do caso de uso não deixa nada gravado."""
-    with pytest.raises(RuntimeError), banco.nova_unidade() as uow:
-        uow.produtos.adicionar(NomeValido("Leite"), None)
-        raise RuntimeError("falha simulada")
+
+    def caso_de_uso_que_falha() -> None:
+        with banco.nova_unidade() as uow:
+            uow.produtos.adicionar(NomeValido("Leite"), None)
+            raise RuntimeError("falha simulada")
+
+    with pytest.raises(RuntimeError):
+        caso_de_uso_que_falha()
     assert ServicoEstoque(banco.nova_unidade).listar_produtos() == []
 
 

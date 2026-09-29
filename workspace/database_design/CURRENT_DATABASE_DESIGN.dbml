@@ -3,17 +3,20 @@ Project stockwatch { database_type: 'SQLite' }
 
 Table categoria {
   id integer [pk]
-  nome text [not null, unique, note: 'COLLATE NOCASE, 1-100']
+  nome text [not null, note: '1-100, como digitado']
+  nome_chave text [not null, unique, note: 'casefold(nome)']
 }
 
 Table fornecedor {
   id integer [pk]
-  nome text [not null, unique, note: 'COLLATE NOCASE, 1-100']
+  nome text [not null, note: '1-100, como digitado']
+  nome_chave text [not null, unique, note: 'casefold(nome)']
 }
 
 Table produto {
   id integer [pk]
-  nome text [not null, unique, note: 'COLLATE NOCASE, 1-100']
+  nome text [not null, note: '1-100, como digitado']
+  nome_chave text [not null, unique, note: 'casefold(nome)']
   categoria_id integer [ref: > categoria.id]
   criado_em text [not null, note: 'ISO 8601 UTC']
 }
