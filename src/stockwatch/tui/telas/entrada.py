@@ -7,12 +7,13 @@ from textual.binding import Binding, BindingType
 from textual.containers import Vertical
 from textual.screen import Screen
 from textual.suggester import SuggestFromList
-from textual.widgets import Footer, Header, Input, Label, Static
+from textual.widgets import Footer, Header, Input, Label
 
 from stockwatch.aplicacao.servico import ServicoEstoque
 from stockwatch.dominio.erros import ErroDominio
 from stockwatch.dominio.leitura import ler_data, ler_quantidade
 from stockwatch.tui.formatos import data_br
+from stockwatch.tui.mensagem import LinhaMensagem
 
 
 class TelaEntrada(Screen[None]):
@@ -20,9 +21,6 @@ class TelaEntrada(Screen[None]):
     DEFAULT_CSS = """
     TelaEntrada #formulario { height: auto; width: 60; padding: 1 2; }
     TelaEntrada Label { margin-top: 1; }
-    TelaEntrada #mensagem { height: auto; padding: 0 2; }
-    TelaEntrada #mensagem.sucesso { color: $success; }
-    TelaEntrada #mensagem.erro { color: $error; }
     """
 
     def __init__(self, servico: ServicoEstoque) -> None:
@@ -42,7 +40,7 @@ class TelaEntrada(Screen[None]):
             yield Input(id="validade", placeholder="DD/MM/AAAA")
             yield Label("Fornecedor (opcional)")
             yield Input(id="fornecedor")
-        yield Static("", id="mensagem")
+        yield LinhaMensagem()
         yield Footer()
 
     def on_mount(self) -> None:
@@ -58,19 +56,12 @@ class TelaEntrada(Screen[None]):
                 valor["fornecedor"],
             )
         except ErroDominio as erro:
-            self._mostrar(str(erro), sucesso=False)
+            self.query_one(LinhaMensagem).erro(str(erro))
         else:
-            self._mostrar(
+            self.query_one(LinhaMensagem).sucesso(
                 f"Entrada de {resumo.quantidade} un. de {resumo.produto} "
-                f"(validade {data_br(resumo.validade)}). Saldo: {resumo.saldo}.",
-                sucesso=True,
+                f"(validade {data_br(resumo.validade)}). Saldo: {resumo.saldo}."
             )
             for campo in self.query(Input):
                 campo.clear()
         self.query_one("#produto", Input).focus()
-
-    def _mostrar(self, texto: str, *, sucesso: bool) -> None:
-        mensagem = self.query_one("#mensagem", Static)
-        mensagem.update(texto)
-        mensagem.set_class(sucesso, "sucesso")
-        mensagem.set_class(not sucesso, "erro")
