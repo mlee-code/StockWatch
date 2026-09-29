@@ -21,7 +21,9 @@ async def test_registra_entrada_so_pelo_teclado(
     async with app.run_test() as piloto:
         await piloto.press("e")
         assert isinstance(app.screen, TelaEntrada)
-        await piloto.press(*"Leite", "tab", *"12", "tab", *"10/10/2026", "tab", *"Sul", "enter")
+        await piloto.press(
+            "i", *"Leite", "tab", *"12", "tab", *"10/10/2026", "tab", *"Sul", "enter"
+        )
         assert "Saldo: 12" in _mensagem(app)
         assert app.screen.query_one("#mensagem").has_class("sucesso")
     [item] = servico.estoque_atual()
@@ -34,7 +36,7 @@ async def test_formulario_limpo_e_foco_no_produto(
     """TEST-TUI-011: após sucesso, pronto para a próxima entrada (UX_UI)."""
     servico.cadastrar_produto("Leite")
     async with app.run_test() as piloto:
-        await piloto.press("e", *"Leite", "tab", "1", "tab", *"2026-10-10", "enter")
+        await piloto.press("e", "i", *"Leite", "tab", "1", "tab", *"2026-10-10", "enter")
         assert app.focused is not None
         assert app.focused.id == "produto"
         assert all(campo.value == "" for campo in app.screen.query(Input))
@@ -46,7 +48,7 @@ async def test_quantidade_invalida_mostra_erro_e_nao_grava(
     """TEST-TUI-012: quantidade inválida é explicada ao operador (REQ-003 CA-1, NFR-002)."""
     servico.cadastrar_produto("Leite")
     async with app.run_test() as piloto:
-        await piloto.press("e", *"Leite", "tab", "0", "tab", *"10/10/2026", "enter")
+        await piloto.press("e", "i", *"Leite", "tab", "0", "tab", *"10/10/2026", "enter")
         assert "inteiro maior que zero" in _mensagem(app)
         assert app.screen.query_one("#mensagem").has_class("erro")
     assert servico.estoque_atual() == []
@@ -56,7 +58,7 @@ async def test_validade_invalida_mostra_erro(app: StockWatchApp, servico: Servic
     """TEST-TUI-013: validade preenchida precisa existir (REQ-003 CA-2)."""
     servico.cadastrar_produto("Leite")
     async with app.run_test() as piloto:
-        await piloto.press("e", *"Leite", "tab", "1", "tab", *"31/02/2026", "enter")
+        await piloto.press("e", "i", *"Leite", "tab", "1", "tab", *"31/02/2026", "enter")
         assert "não existe" in _mensagem(app)
 
 
@@ -66,7 +68,7 @@ async def test_entrada_sem_validade_avisa_que_nao_vence(
     """TEST-TUI-017: validade em branco registra lote que não vence (DECISION-007)."""
     servico.cadastrar_produto("Vassoura")
     async with app.run_test() as piloto:
-        await piloto.press("e", *"Vassoura", "tab", "2", "enter")
+        await piloto.press("e", "i", *"Vassoura", "tab", "2", "enter")
         assert "sem validade" in _mensagem(app)
     assert servico.estoque_atual()[0].proxima_validade is None
 
@@ -74,7 +76,7 @@ async def test_entrada_sem_validade_avisa_que_nao_vence(
 async def test_produto_desconhecido_mostra_erro(app: StockWatchApp) -> None:
     """TEST-TUI-014: entrada só para produto cadastrado (REQ-003)."""
     async with app.run_test() as piloto:
-        await piloto.press("e", *"Feijão", "tab", "1", "tab", *"10/10/2026", "enter")
+        await piloto.press("e", "i", *"Feijão", "tab", "1", "tab", *"10/10/2026", "enter")
         assert "Não há produto" in _mensagem(app)
 
 
@@ -82,7 +84,7 @@ async def test_nome_do_produto_e_sugerido(app: StockWatchApp, servico: ServicoEs
     """TEST-TUI-015: digitar o início e → completa o nome cadastrado (NFR-001)."""
     servico.cadastrar_produto("Leite integral")
     async with app.run_test() as piloto:
-        await piloto.press("e", *"lei", "right")
+        await piloto.press("e", "i", *"lei", "right")
         assert app.screen.query_one("#produto", Input).value == "Leite integral"
 
 
