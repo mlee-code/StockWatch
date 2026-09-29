@@ -22,3 +22,4 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 - [x] TASK-022 — Serviço `registrar_entrada`, `estoque_atual`, `lotes_do_produto`. Fonte: REQ-003, 005. Testes: TEST-UNIT-040 a 048.
 - [x] TASK-023 — Repositórios SQLite de lotes e movimentações. Fonte: DATA_MODEL. Testes: TEST-INT-020 a 025.
 - [x] TASK-024 — Telas de entrada e de estoque. Fonte: REQ-003, 005, UX_UI. Testes: TEST-TUI-010 a 022.
+- [x] TASK-025 — Validade opcional no lote e migração 2. Fonte: FR-001, DECISION-007. Testes: TEST-UNIT-034, 035, 049, 057; TEST-INT-030 a 032; TEST-TUI-013, 017, 023.
