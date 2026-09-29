@@ -1,6 +1,9 @@
-"""Tela de produtos: cadastro, edição e listagem (REQ-001, REQ-002, REQ-011)."""
+"""Tela de produtos: cadastro, edição, exclusão e listagem (REQ-001, 002, 011, 013)."""
+
+from typing import ClassVar
 
 from textual.app import ComposeResult
+from textual.binding import Binding, BindingType
 from textual.containers import Horizontal
 from textual.coordinate import Coordinate
 from textual.widgets import DataTable, Footer, Header, Static
@@ -10,9 +13,11 @@ from stockwatch.aplicacao.servico import ServicoEstoque
 from stockwatch.dominio.erros import ErroDominio
 from stockwatch.tui.mensagem import LinhaMensagem
 from stockwatch.tui.modal import CampoTexto, Modo, TabelaVim, TelaModal
+from stockwatch.tui.telas.confirmacao import Confirmacao
 
 
 class TelaProdutos(TelaModal):
+    BINDINGS: ClassVar[list[BindingType]] = [Binding("d", "excluir", "Excluir")]
     DEFAULT_CSS = """
     TelaProdutos #formulario { height: auto; padding: 1 1 0 1; }
     TelaProdutos #formulario Input { width: 1fr; }
@@ -57,6 +62,28 @@ class TelaProdutos(TelaModal):
         self.query_one("#categoria", CampoTexto).value = produto.categoria or ""
         self.query_one(LinhaMensagem).info(f"Editando: {produto.nome}. Enter salva, Esc cancela.")
         self.query_one("#nome", CampoTexto).focus()
+
+    def action_excluir(self) -> None:
+        """REQ-013: pede confirmação para excluir o produto destacado."""
+        tabela = self.query_one(DataTable)
+        if self.focused is not tabela or not tabela.row_count:
+            return
+        produto = self._produto_na_linha(tabela.cursor_row)
+
+        def ao_responder(confirmado: bool | None) -> None:
+            if confirmado:
+                self._excluir(produto)
+
+        self.app.push_screen(Confirmacao(f"Excluir “{produto.nome}”?"), ao_responder)
+
+    def _excluir(self, produto: ResumoProduto) -> None:
+        try:
+            nome = self._servico.excluir_produto(produto.id)
+        except ErroDominio as erro:
+            self.query_one(LinhaMensagem).erro(str(erro))
+            return
+        self._recarregar()
+        self.query_one(LinhaMensagem).sucesso(f"Produto “{nome}” excluído.")
 
     def action_escape(self) -> None:
         if self.modo is Modo.NORMAL and self._editando is not None:
