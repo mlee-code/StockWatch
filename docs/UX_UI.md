@@ -30,8 +30,8 @@ Abrir `stockwatch` → painel com resumo e alertas → `e` para entrada ou `s` p
 | Estado | Apresentação |
 |---|---|
 | Vazio | texto centralizado que explica a próxima ação (por exemplo: "Nenhum produto. Pressione `p` para cadastrar.") |
-| Erro de validação | notificação de erro com a mensagem do domínio; o campo com problema recebe o foco |
-| Sucesso | notificação curta; o formulário é limpo para a próxima operação |
+| Erro de validação | linha de mensagem (`#mensagem`) em vermelho com o texto do domínio; o foco volta ao primeiro campo |
+| Sucesso | linha de mensagem em verde; o formulário é limpo e o foco volta ao primeiro campo |
 | Alerta de validade | vencido em vermelho (`$error`), perto de vencer em amarelo (`$warning`), sempre também com texto, nunca só com a cor |
 
 ## Layout

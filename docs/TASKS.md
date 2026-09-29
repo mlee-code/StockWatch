@@ -14,4 +14,4 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 - [x] TASK-010 — Valor `NomeValido` e entidade `Produto`. Fonte: REQ-001 CA-1. Testes: SUITE-UNIT.
 - [x] TASK-011 — Serviço `cadastrar_produto`/`listar_produtos` com repositório em memória. Fonte: REQ-001, 002. Testes: SUITE-UNIT.
 - [x] TASK-012 — Migração v1 e repositório SQLite de produtos. Fonte: DATA_MODEL. Testes: SUITE-INT (DT-001, DT-003).
-- [ ] TASK-013 — Tela de produtos. Fonte: REQ-001, 002, UX_UI. Testes: SUITE-TUI.
+- [x] TASK-013 — Tela de produtos. Fonte: REQ-001, 002, UX_UI. Testes: SUITE-TUI.

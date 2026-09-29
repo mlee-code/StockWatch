@@ -36,7 +36,7 @@ Origem: `workspace/proposals/IMPLEMENTATION_PROPOSAL.md` (PROP-001). Branches e 
 
 - [x] V010-01 — Plano da versão (proposta, roadmap, decisões). Prioridade: Crítica. Ciclo-alvo: CYC-001. Versão-alvo: 0.1.0. Dependências: nenhuma. Teste: revisão humana. Estado: entregue.
 - [x] V010-02 — Fundação: projeto Python, ferramentas, arquitetura, requisitos, modelo de dados, critérios de teste e TUI que abre. Prioridade: Crítica. Dependências: V010-01. Teste: smoke da TUI e verificação de ruff e mypy. Estado: entregue (aprovado pelo responsável em 2026-09-29).
-- [ ] V010-03 — Cadastro e listagem de produtos. Prioridade: Crítica. Dependências: V010-02. Testes: unitários, integração e TUI. Estado: planejado.
+- [ ] V010-03 — Cadastro e listagem de produtos. Prioridade: Crítica. Dependências: V010-02. Testes: unitários, integração e TUI. Estado: em validação.
 - [ ] V010-04 — Entrada com lote e validade + estoque atual. Prioridade: Crítica. Dependências: V010-03. Testes: unitários, integração e TUI. Estado: planejado.
 - [ ] V010-05 — Saída FEFO com motivo. Prioridade: Crítica. Dependências: V010-04. Testes: unitários, propriedades, integração e TUI. Estado: planejado.
 - [ ] V010-06 — Validades, alertas, configuração de N e painel. Prioridade: Alta. Dependências: V010-04. Testes: unitários, propriedades e TUI. Estado: planejado.
