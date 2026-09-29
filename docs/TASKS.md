@@ -15,3 +15,14 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 - [x] TASK-011 — Serviço `cadastrar_produto`/`listar_produtos` com repositório em memória. Fonte: REQ-001, 002. Testes: SUITE-UNIT.
 - [x] TASK-012 — Migração v1 e repositório SQLite de produtos. Fonte: DATA_MODEL. Testes: SUITE-INT (DT-001, DT-003).
 - [x] TASK-013 — Tela de produtos. Fonte: REQ-001, 002, UX_UI. Testes: SUITE-TUI.
+
+## V010-04 — Entrada com lote e validade + estoque atual
+- [x] TASK-020 — Leitura de quantidade e data digitadas. Fonte: REQ-003 CA-1, CA-2. Testes: TEST-UNIT-030 a 033.
+- [x] TASK-021 — Lote, Consumo e Movimentacao com invariantes. Fonte: CON-008, DATA_MODEL. Testes: TEST-UNIT-050 a 056.
+- [x] TASK-022 — Serviço `registrar_entrada`, `estoque_atual`, `lotes_do_produto`. Fonte: REQ-003, 005. Testes: TEST-UNIT-040 a 048.
+- [x] TASK-023 — Repositórios SQLite de lotes e movimentações. Fonte: DATA_MODEL. Testes: TEST-INT-020 a 025.
+- [x] TASK-024 — Telas de entrada e de estoque. Fonte: REQ-003, 005, UX_UI. Testes: TEST-TUI-010 a 022.
+- [x] TASK-025 — Validade opcional no lote e migração 2. Fonte: FR-001, DECISION-007. Testes: TEST-UNIT-034, 035, 049, 057; TEST-INT-030 a 032; TEST-TUI-013, 017, 023.
+
+## V010-09 — Modos normal e inserção
+- [x] TASK-090 — TelaModal, CampoTexto e TabelaVim; telas de produtos, entrada e estoque migradas. Fonte: FR-002, DECISION-008, UX_UI. Testes: TEST-TUI-030 a 038.

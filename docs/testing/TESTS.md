@@ -73,9 +73,17 @@ Cada arquivo de teste identifica seus casos como `TEST-<SUITE>-NNN` na docstring
 | TEST-UNIT-001 a 006 | `NomeValido` (REQ-001 CA-1, H6) | `tests/unit/test_nome_valido.py` |
 | TEST-UNIT-010 a 016 | cadastro e listagem no serviço (REQ-001, 002) | `tests/unit/test_servico_produtos.py` |
 | TEST-UNIT-020 a 022 | local do banco (REQ-010 CA-3) | `tests/unit/test_main.py` |
+| TEST-UNIT-030 a 035 | leitura de quantidade e data, validade opcional (REQ-003, DECISION-007) | `tests/unit/test_leitura.py` |
+| TEST-UNIT-040 a 049, 057 | entradas e estoque no serviço, lotes sem validade (REQ-003, 005) | `tests/unit/test_servico_entrada.py` |
+| TEST-UNIT-050 a 056 | invariantes de lotes e movimentações (CON-008) | `tests/unit/test_movimentacao.py` |
+| TEST-INT-020 a 025 | lotes, movimentações, estoque e restrições no SQLite | `tests/integracao/test_entradas_sqlite.py` |
+| TEST-INT-030 a 032 | migração 2 (validade opcional) com dados existentes | `tests/integracao/test_migracao_v2.py` |
+| TEST-TUI-010 a 017 | tela de entrada | `tests/tui/test_tela_entrada.py` |
+| TEST-TUI-020 a 023 | tela de estoque | `tests/tui/test_tela_estoque.py` |
 | TEST-INT-001 a 010 | migração, transações, unicidade e persistência de produtos | `tests/integracao/test_produtos_sqlite.py` |
 | TEST-INT-011 | fluxo TUI → SQLite com reinício | `tests/integracao/test_fluxo_produtos.py` |
 | TEST-INT-012 | rollback de migração com erro | `tests/integracao/test_migracoes.py` |
+| TEST-TUI-030 a 038 | modos normal e inserção (DECISION-008) | `tests/tui/test_modos.py` |
 | TEST-ARQ-001, 002 | camadas e dependências | `tests/arquitetura/test_dependencias.py` |
 
 ## Portões por parte

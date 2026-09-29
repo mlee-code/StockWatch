@@ -1,9 +1,11 @@
 """Portas (interfaces) que a persistência implementa para a aplicação."""
 
+from datetime import date
 from types import TracebackType
 from typing import Protocol, Self
 
-from stockwatch.aplicacao.dtos import ResumoProduto
+from stockwatch.aplicacao.dtos import ItemEstoque, ResumoProduto
+from stockwatch.dominio.estoque import Lote, LoteComSaldo, Movimentacao
 from stockwatch.dominio.produto import Produto
 from stockwatch.dominio.valores import NomeValido
 
@@ -18,11 +20,35 @@ class RepositorioProdutos(Protocol):
         ...
 
 
+class RepositorioLotes(Protocol):
+    def adicionar(
+        self, produto_id: int, validade: date | None, fornecedor: NomeValido | None
+    ) -> Lote: ...
+
+    def com_saldo(self, produto_id: int) -> list[LoteComSaldo]:
+        """Lotes do produto com saldo > 0, na ordem de `ordem_fefo`."""
+        ...
+
+    def resumo_estoque(self) -> list[ItemEstoque]:
+        """Produtos com saldo > 0, em ordem alfabética (REQ-005 CA-1)."""
+        ...
+
+
+class RepositorioMovimentacoes(Protocol):
+    def registrar(self, movimentacao: Movimentacao) -> int: ...
+
+
 class UnidadeDeTrabalho(Protocol):
     """Transação de um caso de uso: sem `confirmar()`, tudo é descartado ao sair do bloco."""
 
     @property
     def produtos(self) -> RepositorioProdutos: ...
+
+    @property
+    def lotes(self) -> RepositorioLotes: ...
+
+    @property
+    def movimentacoes(self) -> RepositorioMovimentacoes: ...
 
     def __enter__(self) -> Self: ...
 

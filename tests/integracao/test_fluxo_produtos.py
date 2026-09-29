@@ -14,7 +14,7 @@ async def test_produto_cadastrado_pela_tui_sobrevive_ao_reinicio(caminho_banco: 
     banco = BancoSqlite(caminho_banco)
     app = StockWatchApp(ServicoEstoque(banco.nova_unidade))
     async with app.run_test() as piloto:
-        await piloto.press("p", *"Arroz", "tab", *"Grãos", "enter")
+        await piloto.press("p", "i", *"Arroz", "tab", *"Grãos", "enter")
     banco.fechar()
 
     reaberto = BancoSqlite(caminho_banco)

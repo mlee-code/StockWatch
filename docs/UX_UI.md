@@ -23,7 +23,22 @@ Abrir `stockwatch` → painel com resumo e alertas → `e` para entrada ou `s` p
 | `c` | Configuração | REQ-007 |
 | `q` | Sair | — |
 
-`Esc` volta ao painel. Em formulários, `Tab` e `Shift+Tab` navegam entre os campos, e `Enter` confirma.
+## Modos normal e inserção (DECISION-008)
+Inspirados no vim e no lazygit. O modo atual aparece na base da tela (`NORMAL` / `INSERÇÃO`).
+
+| Modo | Tecla | Efeito |
+|---|---|---|
+| Normal (ao abrir uma tela) | `j` / `k` | próximo / anterior campo; numa tabela, próxima / anterior linha |
+| | `h` / `l` | área anterior / próxima (campo ou tabela) |
+| | `i` | começa a digitar no campo focado |
+| | `Enter` | confirma o formulário |
+| | `Esc` | volta ao painel |
+| | `p` `e` `t` | abre outra tela (sem empilhar telas) |
+| Inserção | texto | vai para o campo; `Tab` / `Shift+Tab` trocam de campo sem sair do modo |
+| | `Enter` | confirma o formulário e volta ao modo normal |
+| | `Esc` | volta ao modo normal |
+
+No modo normal, as letras nunca alteram o conteúdo dos campos. `q` sai do programa somente a partir do painel inicial.
 
 ## Estados
 

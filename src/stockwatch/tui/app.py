@@ -4,9 +4,12 @@ from typing import ClassVar
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding, BindingType
+from textual.screen import Screen
 from textual.widgets import Footer, Header, Static
 
 from stockwatch.aplicacao.servico import ServicoEstoque
+from stockwatch.tui.telas.entrada import TelaEntrada
+from stockwatch.tui.telas.estoque import TelaEstoque
 from stockwatch.tui.telas.produtos import TelaProdutos
 from stockwatch.tui.tema import TEMA_NEUTRO
 
@@ -17,6 +20,8 @@ class StockWatchApp(App[None]):
     TITLE = "StockWatch"
     BINDINGS: ClassVar[list[BindingType]] = [
         Binding("p", "produtos", "Produtos"),
+        Binding("e", "entrada", "Entrada"),
+        Binding("t", "estoque", "Estoque"),
         Binding("q", "quit", "Sair"),
     ]
     CSS = "#boas-vindas { width: 1fr; height: 1fr; content-align: center middle; }"
@@ -31,8 +36,26 @@ class StockWatchApp(App[None]):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Static("Pressione p para cadastrar e listar produtos.", id="boas-vindas")
+        yield Static("p produtos  ·  e entrada  ·  t estoque  ·  q sair", id="boas-vindas")
         yield Footer()
 
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        # `q` só encerra a partir do painel inicial (UX_UI.md, "Modos").
+        if action == "quit" and len(self.screen_stack) > 1:
+            return False
+        return super().check_action(action, parameters)
+
+    def _abrir(self, tela: Screen[None]) -> None:
+        """Troca de tela sem empilhar: volta ao painel e abre a nova."""
+        while len(self.screen_stack) > 1:
+            self.pop_screen()
+        self.push_screen(tela)
+
     def action_produtos(self) -> None:
-        self.push_screen(TelaProdutos(self.servico))
+        self._abrir(TelaProdutos(self.servico))
+
+    def action_entrada(self) -> None:
+        self._abrir(TelaEntrada(self.servico))
+
+    def action_estoque(self) -> None:
+        self._abrir(TelaEstoque(self.servico))

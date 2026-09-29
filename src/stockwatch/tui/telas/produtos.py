@@ -1,25 +1,19 @@
 """Tela de produtos: cadastro e listagem (REQ-001, REQ-002)."""
 
-from typing import ClassVar
-
 from textual.app import ComposeResult
-from textual.binding import Binding, BindingType
 from textual.containers import Horizontal
-from textual.screen import Screen
-from textual.widgets import DataTable, Footer, Header, Input, Static
+from textual.widgets import DataTable, Footer, Header, Static
 
 from stockwatch.aplicacao.servico import ServicoEstoque
 from stockwatch.dominio.erros import ErroDominio
+from stockwatch.tui.mensagem import LinhaMensagem
+from stockwatch.tui.modal import CampoTexto, Modo, TabelaVim, TelaModal
 
 
-class TelaProdutos(Screen[None]):
-    BINDINGS: ClassVar[list[BindingType]] = [Binding("escape", "app.pop_screen", "Voltar")]
+class TelaProdutos(TelaModal):
     DEFAULT_CSS = """
     TelaProdutos #formulario { height: auto; padding: 1 1 0 1; }
     TelaProdutos #formulario Input { width: 1fr; }
-    TelaProdutos #mensagem { height: 1; padding: 0 2; }
-    TelaProdutos #mensagem.sucesso { color: $success; }
-    TelaProdutos #mensagem.erro { color: $error; }
     TelaProdutos #vazio { width: 1fr; height: 1fr; content-align: center middle; }
     TelaProdutos DataTable { height: 1fr; margin: 0 1; }
     """
@@ -32,30 +26,32 @@ class TelaProdutos(Screen[None]):
     def compose(self) -> ComposeResult:
         yield Header()
         with Horizontal(id="formulario"):
-            yield Input(placeholder="Nome do produto", id="nome")
-            yield Input(placeholder="Categoria (opcional)", id="categoria")
-        yield Static("", id="mensagem")
+            yield CampoTexto(placeholder="Nome do produto", id="nome")
+            yield CampoTexto(placeholder="Categoria (opcional)", id="categoria")
+        yield LinhaMensagem()
         yield Static("Nenhum produto. Digite o nome acima e pressione Enter.", id="vazio")
-        yield DataTable(cursor_type="row")
+        yield TabelaVim(cursor_type="row")
+        yield self.indicador_de_modo()
         yield Footer()
 
     def on_mount(self) -> None:
         self.query_one(DataTable).add_columns("Nome", "Categoria", "Saldo")
         self._recarregar()
-        self.query_one("#nome", Input).focus()
+        self.query_one("#nome", CampoTexto).focus()
 
     def on_input_submitted(self) -> None:
-        nome = self.query_one("#nome", Input)
-        categoria = self.query_one("#categoria", Input)
+        nome = self.query_one("#nome", CampoTexto)
+        categoria = self.query_one("#categoria", CampoTexto)
         try:
             produto = self._servico.cadastrar_produto(nome.value, categoria.value)
         except ErroDominio as erro:
-            self._mostrar(str(erro), sucesso=False)
+            self.query_one(LinhaMensagem).erro(str(erro))
         else:
-            self._mostrar(f"Produto “{produto.nome}” cadastrado.", sucesso=True)
+            self.query_one(LinhaMensagem).sucesso(f"Produto “{produto.nome}” cadastrado.")
             nome.clear()
             categoria.clear()
             self._recarregar()
+            self.modo = Modo.NORMAL
         nome.focus()
 
     def _recarregar(self) -> None:
@@ -66,9 +62,3 @@ class TelaProdutos(Screen[None]):
             tabela.add_row(p.nome, p.categoria or "—", str(p.saldo), key=str(p.id))
         tabela.display = bool(produtos)
         self.query_one("#vazio").display = not produtos
-
-    def _mostrar(self, texto: str, *, sucesso: bool) -> None:
-        mensagem = self.query_one("#mensagem", Static)
-        mensagem.update(texto)
-        mensagem.set_class(sucesso, "sucesso")
-        mensagem.set_class(not sucesso, "erro")

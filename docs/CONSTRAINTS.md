@@ -11,4 +11,4 @@ Todas as restrições estão no estado **aprovado** (origem: `workspace/PROJECT_
 | CON-005 | Custo | somente ferramentas gratuitas e de código aberto | orçamento zero | dependências do `pyproject.toml` |
 | CON-006 | Prazo | v0.1.0 em um ciclo, até 2026-09-30 | meta de portfólio | `ROADMAP.md` |
 | CON-007 | Plataforma | Linux suportado; outros sistemas não testados | ambiente do responsável | CI em `ubuntu-latest` |
-| CON-008 | Dados | toda quantidade em estoque pertence a um lote com validade | regra de negócio | DT-004, SUITE-PROP |
+| CON-008 | Dados | toda quantidade em estoque pertence a um lote; a validade do lote é opcional (DECISION-007) | regra de negócio | DT-004, SUITE-PROP |

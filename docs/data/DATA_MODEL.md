@@ -29,7 +29,7 @@ Este documento trata só do banco do produto. A fonte canônica do esquema físi
 | | `criado_em` | TEXT | ISO 8601 UTC |
 | `lote` | `id` | INTEGER PK | ordem de criação; desempate FEFO (H4) |
 | | `produto_id` | INTEGER | FK `produto`, NOT NULL |
-| | `validade` | TEXT | ISO `AAAA-MM-DD`, NOT NULL, CHECK `validade = date(validade)` |
+| | `validade` | TEXT | ISO `AAAA-MM-DD` ou NULL (não vence, DECISION-007); CHECK `validade IS NULL OR validade IS date(validade)`. Com `=`, um texto inválido geraria NULL e o CHECK passaria |
 | | `fornecedor_id` | INTEGER | FK `fornecedor`, NULL permitido |
 | `movimentacao` | `id` | INTEGER PK | |
 | | `tipo` | TEXT | CHECK `entrada` ou `saida` |
@@ -62,12 +62,15 @@ Nenhum saldo é armazenado. O saldo é derivado das movimentações.
 - **Invariante:** o saldo de todo lote é maior ou igual a zero. É garantido pelo serviço (REQ-004 CA-4) e verificado em `DATA_TESTS.md`.
 
 ## Índices
-- `lote(produto_id, validade, id)`: busca FEFO.
+- `lote(produto_id, validade, id)`: busca FEFO. Lotes sem validade vão por último (`ORDER BY validade IS NULL, validade, id`).
 - `movimentacao_lote(lote_id)`: saldo por lote.
 - `movimentacao(ocorrida_em)`: histórico.
 
 ## Migrações
-`PRAGMA user_version` guarda a versão do esquema. Cada migração é aplicada numa transação, e a versão 1 cria o esquema acima.
+`PRAGMA user_version` guarda a versão do esquema. Cada migração é aplicada numa transação, com as chaves estrangeiras desligadas e `PRAGMA foreign_key_check` antes do COMMIT, conforme o procedimento oficial de alteração de tabelas do SQLite (https://www.sqlite.org/lang_altertable.html).
+
+- v1: esquema inicial.
+- v2: `lote.validade` passa a aceitar NULL (reconstrução da tabela `lote`).
 
 ## Privacidade, criptografia e recuperação
 - **Privacidade:** não há dados pessoais além do nome do fornecedor.
