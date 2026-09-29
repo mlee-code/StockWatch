@@ -50,6 +50,12 @@ class TelaEstoque(TelaModal):
             widget.display = bool(itens)
         estoque.focus()
 
+    def produto_em_foco(self) -> str | None:
+        tabela = self.query_one("#estoque", DataTable)
+        if self.focused is not tabela or not tabela.row_count:
+            return None
+        return str(tabela.get_row_at(tabela.cursor_row)[0])
+
     def on_data_table_row_highlighted(self, evento: DataTable.RowHighlighted) -> None:
         if evento.data_table.id != "estoque" or evento.row_key.value is None:
             return

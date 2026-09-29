@@ -45,6 +45,10 @@ class TelaModal(Screen[None]):
         else:
             self.app.pop_screen()
 
+    def produto_em_foco(self) -> str | None:
+        """Produto destacado numa tabela em foco, para atalhos com contexto (REQ-012)."""
+        return None
+
     def action_inserir(self) -> None:
         if isinstance(self.focused, CampoTexto):
             self.modo = Modo.INSERCAO

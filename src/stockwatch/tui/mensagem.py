@@ -19,6 +19,11 @@ class LinhaMensagem(Static):
     def erro(self, texto: str) -> None:
         self._mostrar(texto, sucesso=False)
 
+    def info(self, texto: str) -> None:
+        """Mensagem neutra, como o aviso de edição em andamento."""
+        self.update(texto)
+        self.remove_class("sucesso", "erro")
+
     def _mostrar(self, texto: str, *, sucesso: bool) -> None:
         self.update(texto)
         self.set_class(sucesso, "sucesso")

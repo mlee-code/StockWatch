@@ -8,6 +8,7 @@ from textual.screen import Screen
 from textual.widgets import Footer, Header, Static
 
 from stockwatch.aplicacao.servico import ServicoEstoque
+from stockwatch.tui.modal import TelaModal
 from stockwatch.tui.telas.entrada import TelaEntrada
 from stockwatch.tui.telas.estoque import TelaEstoque
 from stockwatch.tui.telas.produtos import TelaProdutos
@@ -55,7 +56,10 @@ class StockWatchApp(App[None]):
         self._abrir(TelaProdutos(self.servico))
 
     def action_entrada(self) -> None:
-        self._abrir(TelaEntrada(self.servico))
+        """REQ-012: leva o produto em foco, se houver."""
+        tela = self.screen
+        produto = tela.produto_em_foco() if isinstance(tela, TelaModal) else None
+        self._abrir(TelaEntrada(self.servico, produto))
 
     def action_estoque(self) -> None:
         self._abrir(TelaEstoque(self.servico))
