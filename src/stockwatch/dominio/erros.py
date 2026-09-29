@@ -27,3 +27,7 @@ class MovimentacaoInvalida(ErroDominio):
 
 class SaldoInvalido(ErroDominio):
     """Saldo de lote negativo: violaria o invariante de estoque."""
+
+
+class ProdutoInexistente(ErroDominio):
+    """Nenhum produto cadastrado com o nome ou id informado."""
