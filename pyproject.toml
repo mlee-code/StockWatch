@@ -44,6 +44,8 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP", "SIM", "N", "RUF", "PT", "C4"]
+# N818 exige sufixo "Error"; exceções seguem nomes em português (DECISION-001).
+ignore = ["N818"]
 
 [tool.mypy]
 python_version = "3.12"
