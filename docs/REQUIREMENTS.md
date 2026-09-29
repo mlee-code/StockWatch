@@ -56,6 +56,17 @@ O operador registra uma saída com produto, quantidade e motivo.
 - CA-2: cada operação é atômica: em caso de erro, nada é gravado.
 - CA-3: o local padrão é `$XDG_DATA_HOME/stockwatch/stockwatch.db` e pode ser trocado com `--banco CAMINHO`.
 
+### REQ-011 — Editar produto
+O operador corrige o nome e a categoria de um produto cadastrado (DECISION-009).
+- CA-1: as regras de nome e categoria de REQ-001 CA-1 e CA-3 valem na edição.
+- CA-2: renomear para o nome de outro produto é rejeitado; mudar só a caixa do próprio nome é permitido.
+- CA-3: lotes, saldo e histórico do produto permanecem os mesmos depois da edição.
+- CA-4: a edição pode ser cancelada sem gravar nada.
+
+### REQ-012 — Movimentação a partir do produto em foco
+- CA-1: com um produto destacado numa tabela em foco (produtos ou estoque), a tecla de entrada abre o formulário com o produto preenchido e o foco na quantidade.
+- CA-2: sem tabela em foco, o formulário abre vazio.
+
 ## Requisitos não funcionais
 
 ### NFR-001 — Operação por teclado

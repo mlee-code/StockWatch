@@ -60,6 +60,12 @@ class RepositorioProdutosEmMemoria:
     def buscar_por_nome(self, nome: NomeValido) -> Produto | None:
         return next((p for p in self._uow.estado.produtos.values() if p.nome == nome), None)
 
+    def buscar_por_id(self, produto_id: int) -> Produto | None:
+        return self._uow.estado.produtos.get(produto_id)
+
+    def atualizar(self, produto: Produto) -> None:
+        self._uow.estado.produtos[produto.id] = produto
+
     def listar_resumos(self) -> list[ResumoProduto]:
         estado = self._uow.estado
         ordenados = sorted(estado.produtos.values(), key=lambda p: p.nome.chave)

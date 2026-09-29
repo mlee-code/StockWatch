@@ -26,3 +26,7 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 
 ## V010-09 — Modos normal e inserção
 - [x] TASK-090 — TelaModal, CampoTexto e TabelaVim; telas de produtos, entrada e estoque migradas. Fonte: FR-002, DECISION-008, UX_UI. Testes: TEST-TUI-030 a 038.
+
+## V010-10 — Edição de produto e atalhos com contexto
+- [x] TASK-100 — Serviço e SQLite: `editar_produto`, `buscar_por_id`, `atualizar`. Fonte: REQ-011. Testes: TEST-UNIT-060 a 066, TEST-INT-040 a 042.
+- [x] TASK-101 — TUI: edição na tela de produtos e `e` com o produto em foco. Fonte: REQ-011, REQ-012, UX_UI. Testes: TEST-TUI-040 a 045.

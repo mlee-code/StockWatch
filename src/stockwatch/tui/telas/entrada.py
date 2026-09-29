@@ -19,9 +19,10 @@ class TelaEntrada(TelaModal):
     TelaEntrada Label { margin-top: 1; }
     """
 
-    def __init__(self, servico: ServicoEstoque) -> None:
+    def __init__(self, servico: ServicoEstoque, produto: str | None = None) -> None:
         super().__init__()
         self._servico = servico
+        self._produto_inicial = produto
         self.sub_title = "Registrar entrada"
 
     def compose(self) -> ComposeResult:
@@ -41,7 +42,11 @@ class TelaEntrada(TelaModal):
         yield Footer()
 
     def on_mount(self) -> None:
-        self.query_one("#produto", CampoTexto).focus()
+        if self._produto_inicial:
+            self.query_one("#produto", CampoTexto).value = self._produto_inicial
+            self.query_one("#quantidade", CampoTexto).focus()
+        else:
+            self.query_one("#produto", CampoTexto).focus()
 
     def on_input_submitted(self) -> None:
         valor = {campo.id: campo.value for campo in self.query(CampoTexto)}

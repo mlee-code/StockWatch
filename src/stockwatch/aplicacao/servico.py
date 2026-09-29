@@ -42,6 +42,22 @@ class ServicoEstoque:
             uow.confirmar()
         return ResumoProduto.de(produto, saldo=0)
 
+    def editar_produto(
+        self, produto_id: int, nome: str, categoria: str | None = None
+    ) -> ResumoProduto:
+        """REQ-011: corrige nome e categoria; lotes e histórico seguem pelo id."""
+        editado = Produto(produto_id, NomeValido(nome), _nome_opcional(categoria))
+        with self._nova_unidade() as uow:
+            if uow.produtos.buscar_por_id(produto_id) is None:
+                raise ProdutoInexistente("O produto não existe mais.")
+            homonimo = uow.produtos.buscar_por_nome(editado.nome)
+            if homonimo is not None and homonimo.id != produto_id:
+                raise ProdutoDuplicado(f"Já existe um produto chamado “{homonimo.nome}”.")
+            uow.produtos.atualizar(editado)
+            saldo = sum(item.saldo for item in uow.lotes.com_saldo(produto_id))
+            uow.confirmar()
+        return ResumoProduto.de(editado, saldo=saldo)
+
     def listar_produtos(self) -> list[ResumoProduto]:
         """REQ-002."""
         with self._nova_unidade() as uow:
