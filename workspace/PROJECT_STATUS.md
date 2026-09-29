@@ -8,7 +8,7 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-29.
 - V010-03 — Cadastro e listagem de produtos.
 
 ## Em andamento
-- V010-04 — Entrada com lote e validade + estoque atual, branch `feat/entrada-estoque`.
+- V010-04 — Entrada com lote e validade + estoque atual, branch `feat/entrada-estoque`: implementada, em validação pelo responsável.
 
 ## Próximas
 - V010-05 — Saída FEFO com motivo.

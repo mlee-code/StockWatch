@@ -13,7 +13,7 @@ tui ──► aplicacao ──► dominio
 - `dominio` não importa nenhuma outra camada, nem `sqlite3` ou `textual`.
 - `aplicacao` conhece o domínio e as **portas** (interfaces `Protocol`) dos repositórios, nunca o SQLite.
 - `persistencia` implementa as portas sobre SQLite.
-- `tui` conversa só com `aplicacao`.
+- `tui` conversa com `aplicacao` e, do domínio, usa só as funções puras de `leitura` (texto → valor), os erros e os enums de exibição, sem regras de negócio.
 - Monta tudo: `__main__.py`, a raiz de composição.
 
 ## Objetivos arquiteturais
