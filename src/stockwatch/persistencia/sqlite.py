@@ -107,6 +107,29 @@ class RepositorioProdutosSqlite:
             """,
             (nome.chave,),
         ).fetchone()
+        return self._produto(linha)
+
+    def buscar_por_id(self, produto_id: int) -> Produto | None:
+        linha = self._conexao.execute(
+            """
+            SELECT p.id, p.nome, c.nome FROM produto p
+            LEFT JOIN categoria c ON c.id = p.categoria_id
+            WHERE p.id = ?
+            """,
+            (produto_id,),
+        ).fetchone()
+        return self._produto(linha)
+
+    def atualizar(self, produto: Produto) -> None:
+        categoria = produto.categoria
+        categoria_id = _id_por_nome(self._conexao, "categoria", categoria) if categoria else None
+        self._conexao.execute(
+            "UPDATE produto SET nome = ?, nome_chave = ?, categoria_id = ? WHERE id = ?",
+            (produto.nome.valor, produto.nome.chave, categoria_id, produto.id),
+        )
+
+    @staticmethod
+    def _produto(linha: tuple[int, str, str | None] | None) -> Produto | None:
         if linha is None:
             return None
         return Produto(id=linha[0], nome=NomeValido(linha[1]), categoria=_nome_ou_nada(linha[2]))
