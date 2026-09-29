@@ -38,3 +38,6 @@ Abrir `stockwatch` → painel com resumo e alertas → `e` para entrada ou `s` p
 - Cabeçalho com o título e a tela atual; rodapé com os atalhos.
 - Tabelas (`DataTable`) para listas; `Input` e `Select` para formulários.
 - Tamanho mínimo do terminal: 80×24.
+
+## Tema
+Tema escuro neutro `stockwatch-neutro` (`src/stockwatch/tui/tema.py`): fundo, superfícies e cor primária em tons de cinza, sem cor dominante. A cor só aparece para estado: sucesso em verde, alerta em âmbar e erro em vermelho. Pedido do responsável em 2026-09-29, na revisão da V010-02.
