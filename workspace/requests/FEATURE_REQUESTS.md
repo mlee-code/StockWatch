@@ -29,3 +29,10 @@
   - com um produto destacado numa tabela (produtos ou estoque), `e` abre a entrada com o produto preenchido e o foco na quantidade;
   - vale também para a saída (`s`) quando ela existir;
   - sem tabela em foco, a entrada abre vazia.
+
+## FR-005 — Excluir produto
+- Origem: revisão da V010-05 pelo responsável, 2026-09-29.
+- Pedido: "em produtos, ainda não tem uma opção para deletar um produto".
+- Desenho adotado pelo agente, sujeito ao review da versão (DECISION-010):
+  - só se exclui produto sem movimentações;
+  - com o produto destacado, `d` pede confirmação (`s` confirma; `n` ou `Esc` cancela).
