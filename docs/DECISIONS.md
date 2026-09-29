@@ -361,3 +361,130 @@ Rede, múltiplos usuários, dados sensíveis ou distribuição pública em larga
 
 ## Substituída por
 - Nenhuma.
+
+# DECISION-007 — Validade opcional no lote
+
+## Estado
+- [ ] Proposta
+- [x] Aceita
+- [ ] Rejeitada
+- [ ] Substituída
+- [ ] Obsoleta
+
+## Data
+2026-09-29
+
+## Responsável
+M Lee
+
+## Contexto
+FR-001: nem todo produto de um pequeno comércio vence (utensílios, produtos de limpeza). A v0.1.0 exigia validade em toda entrada (REQ-003 CA-2, CON-008).
+
+## Problema
+Obrigar uma data fictícia distorceria os alertas e o FEFO.
+
+## Decisão
+A validade é opcional em cada lote. Um lote sem validade:
+- nunca está vencido nem perto de vencer;
+- é consumido por último no FEFO, depois de todos os lotes com data;
+- pode ser vendido; não entra num descarte por vencimento.
+
+O esquema passa a aceitar `lote.validade` nulo pela migração 2, que reconstrói a tabela conforme o procedimento oficial do SQLite.
+
+## Motivação
+O modelo por lote não exige cadastro extra e permite o mesmo produto com lotes com e sem validade.
+
+## Alternativas consideradas
+### Alternativa A
+- Descrição: marca "não perecível" no produto.
+- Vantagens: a entrada nunca pede a data desses produtos.
+- Desvantagens: campo e regra a mais; não cobre o mesmo produto com e sem validade.
+- Motivo da rejeição: escolha do responsável pela opção recomendada.
+
+## Consequências
+### Positivas
+- Suporta todo o estoque do comércio.
+### Negativas
+- Uma validade esquecida numa entrada vira um lote que não vence. A mensagem de sucesso deixa isso explícito.
+### Riscos
+- Perecível registrado sem data. Mitigação: a mensagem de sucesso mostra "sem validade".
+
+## Documentos afetados
+- `REQUIREMENTS.md` (REQ-003 CA-2, REQ-004 CA-2, REQ-005, REQ-006), `CONSTRAINTS.md` (CON-008), `data/DATA_MODEL.md`.
+
+## Código ou módulos afetados
+- `dominio.estoque`, `dominio.leitura`, `aplicacao`, `persistencia` (migração 2), `tui`.
+
+## Critério para revisar esta decisão
+Pedidos de alerta para produtos sem validade.
+
+## Substitui
+- Parte de REQ-003 CA-2 da revisão inicial ("validade obrigatória").
+
+## Substituída por
+- Nenhuma.
+
+# DECISION-008 — Modos normal e inserção na TUI
+
+## Estado
+- [ ] Proposta
+- [x] Aceita
+- [ ] Rejeitada
+- [ ] Substituída
+- [ ] Obsoleta
+
+## Data
+2026-09-29
+
+## Responsável
+M Lee
+
+## Contexto
+FR-002: o responsável usa vim e lazygit e quer navegar sem tirar as mãos da fileira central do teclado.
+
+## Problema
+Com os campos sempre em modo de digitação, as letras não podem servir de comandos dentro dos formulários.
+
+## Decisão
+- **Modo normal**, em que as telas abrem:
+  - `h`/`l` movem o foco entre áreas (campos, tabelas);
+  - `j`/`k` descem e sobem entre campos ou linhas de tabela;
+  - `i` entra no modo inserção no campo focado;
+  - `Enter` confirma o formulário;
+  - `Esc` volta ao painel;
+  - as teclas globais (`p`, `e`, `t`, `q`) funcionam.
+- **Modo inserção:** o texto vai para o campo, e `Esc` volta ao modo normal.
+- O modo atual aparece na tela (`NORMAL` / `INSERÇÃO`).
+
+## Motivação
+Atende ao pedido e mantém a TUI operável só pelo teclado (NFR-001), com os atalhos visíveis.
+
+## Alternativas consideradas
+### Alternativa A
+- Descrição: abrir no modo inserção no primeiro campo.
+- Vantagens: lançamento um toque mais rápido.
+- Desvantagens: menos previsível para quem espera o comportamento do vim.
+- Motivo da rejeição: escolha do responsável.
+
+## Consequências
+### Positivas
+- Navegação consistente entre telas.
+### Negativas
+- Um toque a mais (`i`) para começar a digitar.
+### Riscos
+- Estranheza para quem não conhece o vim. Mitigação: o modo aparece na tela e os atalhos ficam no rodapé.
+
+## Documentos afetados
+- `UX_UI.md`, `REQUIREMENTS.md` (NFR-001).
+
+## Código ou módulos afetados
+- `tui`.
+
+## Critério para revisar esta decisão
+Dificuldade de uso relatada no review da versão.
+
+## Substitui
+- Nenhuma.
+
+## Substituída por
+- Nenhuma.
