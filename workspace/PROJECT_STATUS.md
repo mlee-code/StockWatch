@@ -10,7 +10,7 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-29.
 - V010-09 — Modos normal e inserção.
 
 ## Em andamento
-- V010-10 — Edição de produto e atalhos com contexto (FR-003, FR-004).
+- V010-10 — Edição de produto e atalhos com contexto (FR-003, FR-004), branch `feat/editar-produto`: implementada, em validação.
 
 ## Próximas
 - V010-05 — Saída FEFO com motivo.

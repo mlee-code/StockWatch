@@ -84,6 +84,9 @@ Cada arquivo de teste identifica seus casos como `TEST-<SUITE>-NNN` na docstring
 | TEST-INT-011 | fluxo TUI → SQLite com reinício | `tests/integracao/test_fluxo_produtos.py` |
 | TEST-INT-012 | rollback de migração com erro | `tests/integracao/test_migracoes.py` |
 | TEST-TUI-030 a 038 | modos normal e inserção (DECISION-008) | `tests/tui/test_modos.py` |
+| TEST-UNIT-060 a 066 | edição de produto no serviço (REQ-011) | `tests/unit/test_servico_edicao.py` |
+| TEST-INT-040 a 042 | edição de produto no SQLite (REQ-011) | `tests/integracao/test_edicao_sqlite.py` |
+| TEST-TUI-040 a 045 | edição na TUI e atalhos com contexto (REQ-011, 012) | `tests/tui/test_contexto_e_edicao.py` |
 | TEST-ARQ-001, 002 | camadas e dependências | `tests/arquitetura/test_dependencias.py` |
 
 ## Portões por parte
