@@ -38,7 +38,11 @@ Inspirados no vim e no lazygit. O modo atual aparece na base da tela (`NORMAL` /
 | | `Enter` | confirma o formulário e volta ao modo normal |
 | | `Esc` | volta ao modo normal |
 
-No modo normal, as letras nunca alteram o conteúdo dos campos. `q` sai do programa somente a partir do painel inicial.
+No modo normal, as letras nunca alteram o conteúdo dos campos.
+
+### Contexto e edição (DECISION-009)
+- Produtos: com uma linha da tabela em foco, `Enter` carrega o produto no formulário ("Editando: …"). `Enter` no formulário salva, e `Esc` cancela a edição antes de voltar ao painel.
+- Com uma linha de produto em foco (produtos ou estoque), `e` abre a entrada com o produto preenchido e o foco na quantidade. `q` sai do programa somente a partir do painel inicial.
 
 ## Estados
 

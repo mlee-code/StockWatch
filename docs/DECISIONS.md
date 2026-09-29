@@ -488,3 +488,61 @@ Dificuldade de uso relatada no review da versão.
 
 ## Substituída por
 - Nenhuma.
+
+# DECISION-009 — Edição de produto e atalhos com contexto na v0.1.0
+
+## Estado
+- [ ] Proposta
+- [x] Aceita
+- [ ] Rejeitada
+- [ ] Substituída
+- [ ] Obsoleta
+
+## Data
+2026-09-29
+
+## Responsável
+M Lee
+
+## Contexto
+PROP-001 deixava a edição de produtos fora da v0.1.0. Na validação, o responsável pediu a edição (FR-003) e atalhos que levem o produto em foco para a entrada (FR-004).
+
+## Problema
+Sem edição, um erro de digitação no nome ficaria permanente. Sem contexto, o operador redigita o produto que acabou de ver.
+
+## Decisão
+- Incluir a edição de nome e categoria na v0.1.0 (REQ-011). A exclusão de produtos continua fora.
+- Os atalhos de movimentação (`e`, e `s` na V010-05) herdam o produto destacado na tabela em foco (REQ-012).
+
+## Motivação
+Correção de cadastro é necessidade real de uso. Como lotes e movimentações referenciam o produto pelo `id`, renomear não afeta o histórico.
+
+## Alternativas consideradas
+### Alternativa A
+- Descrição: adiar a edição para o próximo ciclo.
+- Vantagens: menor escopo.
+- Desvantagens: produto inutilizável depois de um erro de digitação.
+- Motivo da rejeição: pedido do responsável na validação.
+
+## Consequências
+### Positivas
+- Cadastro corrigível; fluxo produto → entrada mais rápido.
+### Negativas
+- Mais estados na tela de produtos (cadastro e edição).
+### Riscos
+- Renomear para um nome existente. Mitigação: a mesma regra de unicidade do cadastro (REQ-001 CA-2).
+
+## Documentos afetados
+- `REQUIREMENTS.md` (REQ-011, REQ-012), `UX_UI.md`, `ROADMAP.md` (V010-10), PROP-001 ("Não incluído").
+
+## Código ou módulos afetados
+- `aplicacao`, `persistencia`, `tui`.
+
+## Critério para revisar esta decisão
+Pedido de exclusão de produtos ou de edição de movimentações.
+
+## Substitui
+- A exclusão da edição de produtos em PROP-001, "Não incluído".
+
+## Substituída por
+- Nenhuma.
