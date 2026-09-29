@@ -24,7 +24,7 @@ Table produto {
 Table lote {
   id integer [pk, note: 'ordem de criação; desempate FEFO']
   produto_id integer [not null, ref: > produto.id]
-  validade text [not null, note: 'AAAA-MM-DD']
+  validade text [note: 'AAAA-MM-DD; NULL = não vence']
   fornecedor_id integer [ref: > fornecedor.id]
   indexes { (produto_id, validade, id) }
 }
