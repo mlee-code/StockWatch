@@ -7,3 +7,7 @@ class ErroDominio(Exception):
 
 class NomeInvalido(ErroDominio):
     """Nome vazio ou longo demais."""
+
+
+class ProdutoDuplicado(ErroDominio):
+    """Já existe produto com o mesmo nome, sem diferenciar maiúsculas (H6)."""
