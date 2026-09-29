@@ -21,15 +21,8 @@ class RepositorioProdutosEmMemoria:
         return next((p for p in self._produtos.values() if p.nome == nome), None)
 
     def listar_resumos(self) -> list[ResumoProduto]:
-        return [
-            ResumoProduto(
-                id=p.id,
-                nome=p.nome.valor,
-                categoria=p.categoria.valor if p.categoria else None,
-                saldo=0,
-            )
-            for p in sorted(self._produtos.values(), key=lambda p: p.nome.chave)
-        ]
+        ordenados = sorted(self._produtos.values(), key=lambda p: p.nome.chave)
+        return [ResumoProduto.de(p, saldo=0) for p in ordenados]
 
 
 class UnidadeDeTrabalhoEmMemoria:

@@ -28,12 +28,7 @@ class ServicoEstoque:
                 raise ProdutoDuplicado(f"Já existe um produto chamado “{existente.nome}”.")
             produto = uow.produtos.adicionar(nome_valido, categoria_valida)
             uow.confirmar()
-        return ResumoProduto(
-            id=produto.id,
-            nome=produto.nome.valor,
-            categoria=produto.categoria.valor if produto.categoria else None,
-            saldo=0,
-        )
+        return ResumoProduto.de(produto, saldo=0)
 
     def listar_produtos(self) -> list[ResumoProduto]:
         """REQ-002."""
