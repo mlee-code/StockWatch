@@ -46,3 +46,15 @@ async def test_esc_volta_ao_inicio(app: StockWatchApp) -> None:
     async with app.run_test() as piloto:
         await piloto.press("t", "escape")
         assert not isinstance(app.screen, TelaEstoque)
+
+
+async def test_estoque_mostra_sem_validade(app: StockWatchApp, servico: ServicoEstoque) -> None:
+    """TEST-TUI-023: produto só com lotes sem data aparece "sem validade" (REQ-005 CA-1)."""
+    servico.cadastrar_produto("Vassoura")
+    servico.registrar_entrada("Vassoura", 2, None)
+    async with app.run_test() as piloto:
+        await piloto.press("t")
+        estoque = app.screen.query_one("#estoque", DataTable)
+        lotes = app.screen.query_one("#lotes", DataTable)
+        assert _linhas(estoque) == [["Vassoura", "2", "sem validade"]]
+        assert _linhas(lotes) == [["sem validade", "—", "2"]]

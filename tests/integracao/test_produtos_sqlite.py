@@ -8,15 +8,16 @@ import pytest
 from stockwatch.aplicacao.servico import ServicoEstoque
 from stockwatch.dominio.erros import ProdutoDuplicado
 from stockwatch.dominio.valores import NomeValido
+from stockwatch.persistencia.migracoes import MIGRACOES
 from stockwatch.persistencia.sqlite import BancoSqlite
 
 
 def test_migracao_leva_banco_novo_a_versao_atual(caminho_banco: Path) -> None:
-    """TEST-INT-001 / DT-001: banco novo chega a user_version 1; reabrir não reaplica."""
+    """TEST-INT-001 / DT-001: banco novo chega à versão atual; reabrir não reaplica."""
     BancoSqlite(caminho_banco).fechar()
     BancoSqlite(caminho_banco).fechar()
     with sqlite3.connect(caminho_banco) as conexao:
-        assert conexao.execute("PRAGMA user_version").fetchone()[0] == 1
+        assert conexao.execute("PRAGMA user_version").fetchone()[0] == len(MIGRACOES)
 
 
 def test_chaves_estrangeiras_ativas(banco: BancoSqlite) -> None:

@@ -53,11 +53,22 @@ async def test_quantidade_invalida_mostra_erro_e_nao_grava(
 
 
 async def test_validade_invalida_mostra_erro(app: StockWatchApp, servico: ServicoEstoque) -> None:
-    """TEST-TUI-013: validade obrigatória e válida (REQ-003 CA-2)."""
+    """TEST-TUI-013: validade preenchida precisa existir (REQ-003 CA-2)."""
     servico.cadastrar_produto("Leite")
     async with app.run_test() as piloto:
-        await piloto.press("e", *"Leite", "tab", "1", "enter")
-        assert "DD/MM/AAAA" in _mensagem(app)
+        await piloto.press("e", *"Leite", "tab", "1", "tab", *"31/02/2026", "enter")
+        assert "não existe" in _mensagem(app)
+
+
+async def test_entrada_sem_validade_avisa_que_nao_vence(
+    app: StockWatchApp, servico: ServicoEstoque
+) -> None:
+    """TEST-TUI-017: validade em branco registra lote que não vence (DECISION-007)."""
+    servico.cadastrar_produto("Vassoura")
+    async with app.run_test() as piloto:
+        await piloto.press("e", *"Vassoura", "tab", "2", "enter")
+        assert "sem validade" in _mensagem(app)
+    assert servico.estoque_atual()[0].proxima_validade is None
 
 
 async def test_produto_desconhecido_mostra_erro(app: StockWatchApp) -> None:

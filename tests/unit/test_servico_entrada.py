@@ -115,3 +115,23 @@ def test_lotes_do_produto_por_validade(servico: ServicoEstoque) -> None:
 def test_estoque_vazio(servico: ServicoEstoque) -> None:
     """TEST-UNIT-048: sem entradas, estoque vazio."""
     assert servico.estoque_atual() == []
+
+
+def test_entrada_sem_validade(servico: ServicoEstoque) -> None:
+    """TEST-UNIT-049: lote sem validade entra no estoque sem próxima validade (DECISION-007)."""
+    resumo = servico.registrar_entrada("Leite", 4, None)
+    assert resumo.validade is None
+    [item] = servico.estoque_atual()
+    assert (item.saldo, item.proxima_validade) == (4, None)
+
+
+def test_lotes_sem_validade_vem_por_ultimo(servico: ServicoEstoque) -> None:
+    """TEST-UNIT-057: sem validade depois dos datados; a próxima validade os ignora."""
+    servico.registrar_entrada("Leite", 1, None)
+    servico.registrar_entrada("Leite", 2, date(2026, 12, 1))
+    produto_id = servico.estoque_atual()[0].produto_id
+    assert [lote.validade for lote in servico.lotes_do_produto(produto_id)] == [
+        date(2026, 12, 1),
+        None,
+    ]
+    assert servico.estoque_atual()[0].proxima_validade == date(2026, 12, 1)

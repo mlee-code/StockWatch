@@ -5,7 +5,7 @@ from datetime import date
 import pytest
 
 from stockwatch.dominio.erros import DataInvalida, QuantidadeInvalida
-from stockwatch.dominio.leitura import ler_data, ler_quantidade
+from stockwatch.dominio.leitura import ler_data, ler_data_opcional, ler_quantidade
 
 
 @pytest.mark.parametrize(("texto", "esperado"), [("1", 1), (" 12 ", 12), ("1000000", 1_000_000)])
@@ -41,3 +41,16 @@ def test_rejeita_data_invalida(texto: str) -> None:
     """TEST-UNIT-033: vazia, inexistente ou em formato não aceito."""
     with pytest.raises(DataInvalida):
         ler_data(texto)
+
+
+@pytest.mark.parametrize("texto", ["", "   "])
+def test_data_opcional_em_branco_e_nenhuma(texto: str) -> None:
+    """TEST-UNIT-034: validade em branco significa lote que não vence (DECISION-007)."""
+    assert ler_data_opcional(texto) is None
+
+
+def test_data_opcional_preenchida_segue_as_regras() -> None:
+    """TEST-UNIT-035: preenchida, a validade é lida e validada como antes (REQ-003 CA-2)."""
+    assert ler_data_opcional("05/10/2026") == date(2026, 10, 5)
+    with pytest.raises(DataInvalida):
+        ler_data_opcional("31/02/2026")
