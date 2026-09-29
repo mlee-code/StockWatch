@@ -35,3 +35,7 @@ class ProdutoInexistente(ErroDominio):
 
 class SaldoInsuficiente(ErroDominio):
     """Saldo elegível menor que a quantidade pedida; a saída é rejeitada inteira."""
+
+
+class MotivoInvalido(ErroDominio):
+    """Motivo de saída fora de venda, perda ou descarte por vencimento."""

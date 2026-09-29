@@ -7,7 +7,8 @@ nunca outra exceção (SUITE-FUZZ).
 import re
 from datetime import date
 
-from stockwatch.dominio.erros import DataInvalida, QuantidadeInvalida
+from stockwatch.dominio.erros import DataInvalida, MotivoInvalido, QuantidadeInvalida
+from stockwatch.dominio.estoque import MotivoSaida
 
 _INTEIRO = re.compile(r"[0-9]+")
 _ISO = re.compile(r"(\d{4})-(\d{2})-(\d{2})", re.ASCII)
@@ -40,3 +41,20 @@ def ler_data(texto: str) -> date:
 def ler_data_opcional(texto: str) -> date | None:
     """Validade opcional: em branco, o lote não vence (DECISION-007)."""
     return ler_data(texto) if texto.strip() else None
+
+
+_MOTIVOS = {
+    **dict.fromkeys(["", "v", "venda"], MotivoSaida.VENDA),
+    **dict.fromkeys(["p", "perda"], MotivoSaida.PERDA),
+    **dict.fromkeys(["d", "descarte", "descarte por vencimento"], MotivoSaida.DESCARTE_VENCIMENTO),
+}
+
+
+def ler_motivo(texto: str) -> MotivoSaida:
+    """Motivo pela inicial ou pelo nome; em branco, venda (REQ-004 CA-1, UX_UI.md)."""
+    try:
+        return _MOTIVOS[" ".join(texto.split()).casefold()]
+    except KeyError:
+        raise MotivoInvalido(
+            "Motivo inválido: use venda (v), perda (p) ou descarte por vencimento (d)."
+        ) from None
