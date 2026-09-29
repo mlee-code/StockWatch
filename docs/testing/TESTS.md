@@ -93,6 +93,9 @@ Cada arquivo de teste identifica seus casos como `TEST-<SUITE>-NNN` na docstring
 | TEST-UNIT-036, 037 | leitura do motivo | `tests/unit/test_leitura.py` |
 | TEST-INT-050 a 052 | saídas no SQLite, atomicidade e invariante de saldo (DT-006, DT-007) | `tests/integracao/test_saidas_sqlite.py` |
 | TEST-TUI-050 a 055 | tela de saída e `s` com produto em foco | `tests/tui/test_tela_saida.py` |
+| TEST-UNIT-090 a 093 | exclusão de produto no serviço (REQ-013) | `tests/unit/test_servico_exclusao.py` |
+| TEST-INT-060, 061 | exclusão de produto no SQLite | `tests/integracao/test_exclusao_sqlite.py` |
+| TEST-TUI-060 a 063 | exclusão com confirmação | `tests/tui/test_exclusao.py` |
 | TEST-ARQ-001, 002 | camadas e dependências | `tests/arquitetura/test_dependencias.py` |
 
 ## Portões por parte

@@ -12,7 +12,7 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-29.
 - V010-05 — Saída FEFO com motivo.
 
 ## Em andamento
-- V010-11 — Exclusão de produto, branch `feat/excluir-produto`.
+- V010-11 — Exclusão de produto, branch `feat/excluir-produto`: implementada, em validação.
 
 ## Próximas
 - V010-06 — Validades, alertas, configuração de N e painel.
