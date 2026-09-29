@@ -3,10 +3,17 @@
 from collections.abc import Callable
 from datetime import UTC, date, datetime
 
-from stockwatch.aplicacao.dtos import ItemEstoque, ResumoEntrada, ResumoProduto, SaldoLote
+from stockwatch.aplicacao.dtos import (
+    ItemEstoque,
+    ResumoEntrada,
+    ResumoProduto,
+    ResumoSaida,
+    SaldoLote,
+)
 from stockwatch.aplicacao.portas import UnidadeDeTrabalho
 from stockwatch.dominio.erros import ProdutoDuplicado, ProdutoInexistente
-from stockwatch.dominio.estoque import Movimentacao
+from stockwatch.dominio.estoque import MotivoSaida, Movimentacao, TipoMovimentacao
+from stockwatch.dominio.fefo import planejar_saida
 from stockwatch.dominio.produto import Produto
 from stockwatch.dominio.valores import NomeValido
 
@@ -26,9 +33,12 @@ class ServicoEstoque:
         self,
         nova_unidade: Callable[[], UnidadeDeTrabalho],
         agora: Callable[[], datetime] = _agora_utc,
+        hoje: Callable[[], date] = date.today,
     ) -> None:
         self._nova_unidade = nova_unidade
         self._agora = agora
+        # Data local do comércio, que decide o que está vencido (H5).
+        self._hoje = hoje
 
     def cadastrar_produto(self, nome: str, categoria: str | None = None) -> ResumoProduto:
         """REQ-001."""
@@ -87,6 +97,22 @@ class ServicoEstoque:
             saldo = sum(item.saldo for item in uow.lotes.com_saldo(encontrado.id))
             uow.confirmar()
         return ResumoEntrada(encontrado.nome.valor, lote.id, quantidade, validade, saldo)
+
+    def registrar_saida(self, produto: str, quantidade: int, motivo: MotivoSaida) -> ResumoSaida:
+        """REQ-004: consome lotes por FEFO; rejeita a saída inteira sem saldo elegível."""
+        nome = NomeValido(produto)
+        with self._nova_unidade() as uow:
+            encontrado = self._produto_existente(uow, nome)
+            lotes = uow.lotes.com_saldo(encontrado.id)
+            plano = planejar_saida(lotes, quantidade, motivo, self._hoje())
+            uow.movimentacoes.registrar(
+                Movimentacao(TipoMovimentacao.SAIDA, encontrado.id, plano, self._agora(), motivo)
+            )
+            saldo = sum(item.saldo for item in uow.lotes.com_saldo(encontrado.id))
+            uow.confirmar()
+        validade = {item.lote.id: item.lote.validade for item in lotes}
+        consumos = tuple((validade[c.lote_id], c.quantidade) for c in plano)
+        return ResumoSaida(encontrado.nome.valor, quantidade, motivo, consumos, saldo)
 
     def estoque_atual(self) -> list[ItemEstoque]:
         """REQ-005 CA-1."""

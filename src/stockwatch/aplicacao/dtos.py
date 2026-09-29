@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Self
 
-from stockwatch.dominio.estoque import LoteComSaldo
+from stockwatch.dominio.estoque import LoteComSaldo, MotivoSaida
 from stockwatch.dominio.produto import Produto
 
 
@@ -35,6 +35,17 @@ class ResumoEntrada:
     lote_id: int
     quantidade: int
     validade: date | None
+    saldo: int
+
+
+@dataclass(frozen=True, slots=True)
+class ResumoSaida:
+    """Resultado de uma saída: quanto saiu de cada lote, por validade (REQ-004)."""
+
+    produto: str
+    quantidade: int
+    motivo: MotivoSaida
+    consumos: tuple[tuple[date | None, int], ...]
     saldo: int
 
 
