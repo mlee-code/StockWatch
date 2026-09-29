@@ -31,3 +31,7 @@ class SaldoInvalido(ErroDominio):
 
 class ProdutoInexistente(ErroDominio):
     """Nenhum produto cadastrado com o nome ou id informado."""
+
+
+class SaldoInsuficiente(ErroDominio):
+    """Saldo elegível menor que a quantidade pedida; a saída é rejeitada inteira."""
