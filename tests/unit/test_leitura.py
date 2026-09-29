@@ -4,8 +4,9 @@ from datetime import date
 
 import pytest
 
-from stockwatch.dominio.erros import DataInvalida, QuantidadeInvalida
-from stockwatch.dominio.leitura import ler_data, ler_data_opcional, ler_quantidade
+from stockwatch.dominio.erros import DataInvalida, MotivoInvalido, QuantidadeInvalida
+from stockwatch.dominio.estoque import MotivoSaida
+from stockwatch.dominio.leitura import ler_data, ler_data_opcional, ler_motivo, ler_quantidade
 
 
 @pytest.mark.parametrize(("texto", "esperado"), [("1", 1), (" 12 ", 12), ("1000000", 1_000_000)])
@@ -54,3 +55,28 @@ def test_data_opcional_preenchida_segue_as_regras() -> None:
     assert ler_data_opcional("05/10/2026") == date(2026, 10, 5)
     with pytest.raises(DataInvalida):
         ler_data_opcional("31/02/2026")
+
+
+@pytest.mark.parametrize(
+    ("texto", "esperado"),
+    [
+        ("", MotivoSaida.VENDA),
+        (" v ", MotivoSaida.VENDA),
+        ("Venda", MotivoSaida.VENDA),
+        ("p", MotivoSaida.PERDA),
+        ("PERDA", MotivoSaida.PERDA),
+        ("d", MotivoSaida.DESCARTE_VENCIMENTO),
+        ("descarte", MotivoSaida.DESCARTE_VENCIMENTO),
+        ("Descarte por vencimento", MotivoSaida.DESCARTE_VENCIMENTO),
+    ],
+)
+def test_le_motivo_por_inicial_ou_nome(texto: str, esperado: MotivoSaida) -> None:
+    """TEST-UNIT-036: motivo pela inicial ou pelo nome; em branco é venda (UX_UI.md)."""
+    assert ler_motivo(texto) is esperado
+
+
+@pytest.mark.parametrize("texto", ["x", "vendas", "roubo", "descartar tudo"])
+def test_rejeita_motivo_desconhecido(texto: str) -> None:
+    """TEST-UNIT-037: motivo fora da lista é rejeitado com as opções válidas (REQ-004 CA-1)."""
+    with pytest.raises(MotivoInvalido, match="venda"):
+        ler_motivo(texto)

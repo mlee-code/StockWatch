@@ -12,6 +12,7 @@ from stockwatch.tui.modal import TelaModal
 from stockwatch.tui.telas.entrada import TelaEntrada
 from stockwatch.tui.telas.estoque import TelaEstoque
 from stockwatch.tui.telas.produtos import TelaProdutos
+from stockwatch.tui.telas.saida import TelaSaida
 from stockwatch.tui.tema import TEMA_NEUTRO
 
 
@@ -22,6 +23,7 @@ class StockWatchApp(App[None]):
     BINDINGS: ClassVar[list[BindingType]] = [
         Binding("p", "produtos", "Produtos"),
         Binding("e", "entrada", "Entrada"),
+        Binding("s", "saida", "Saída"),
         Binding("t", "estoque", "Estoque"),
         Binding("q", "quit", "Sair"),
     ]
@@ -37,7 +39,9 @@ class StockWatchApp(App[None]):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Static("p produtos  ·  e entrada  ·  t estoque  ·  q sair", id="boas-vindas")
+        yield Static(
+            "p produtos  ·  e entrada  ·  s saída  ·  t estoque  ·  q sair", id="boas-vindas"
+        )
         yield Footer()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
@@ -57,9 +61,15 @@ class StockWatchApp(App[None]):
 
     def action_entrada(self) -> None:
         """REQ-012: leva o produto em foco, se houver."""
+        self._abrir(TelaEntrada(self.servico, self._produto_em_foco()))
+
+    def action_saida(self) -> None:
+        """REQ-004, REQ-012: leva o produto em foco, se houver."""
+        self._abrir(TelaSaida(self.servico, self._produto_em_foco()))
+
+    def _produto_em_foco(self) -> str | None:
         tela = self.screen
-        produto = tela.produto_em_foco() if isinstance(tela, TelaModal) else None
-        self._abrir(TelaEntrada(self.servico, produto))
+        return tela.produto_em_foco() if isinstance(tela, TelaModal) else None
 
     def action_estoque(self) -> None:
         self._abrir(TelaEstoque(self.servico))
