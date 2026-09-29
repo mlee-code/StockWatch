@@ -19,3 +19,11 @@ class QuantidadeInvalida(ErroDominio):
 
 class DataInvalida(ErroDominio):
     """Data inexistente ou fora dos formatos aceitos."""
+
+
+class MovimentacaoInvalida(ErroDominio):
+    """Movimentação incoerente (sem linhas, ou tipo e motivo incompatíveis)."""
+
+
+class SaldoInvalido(ErroDominio):
+    """Saldo de lote negativo: violaria o invariante de estoque."""
