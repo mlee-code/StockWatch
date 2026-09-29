@@ -1,23 +1,19 @@
 """Tela de registro de entrada (REQ-003)."""
 
-from typing import ClassVar
-
 from textual.app import ComposeResult
-from textual.binding import Binding, BindingType
 from textual.containers import Vertical
-from textual.screen import Screen
 from textual.suggester import SuggestFromList
-from textual.widgets import Footer, Header, Input, Label
+from textual.widgets import Footer, Header, Label
 
 from stockwatch.aplicacao.servico import ServicoEstoque
 from stockwatch.dominio.erros import ErroDominio
 from stockwatch.dominio.leitura import ler_data_opcional, ler_quantidade
 from stockwatch.tui.formatos import validade_br
 from stockwatch.tui.mensagem import LinhaMensagem
+from stockwatch.tui.modal import CampoTexto, Modo, TelaModal
 
 
-class TelaEntrada(Screen[None]):
-    BINDINGS: ClassVar[list[BindingType]] = [Binding("escape", "app.pop_screen", "Voltar")]
+class TelaEntrada(TelaModal):
     DEFAULT_CSS = """
     TelaEntrada #formulario { height: auto; width: 60; padding: 1 2; }
     TelaEntrada Label { margin-top: 1; }
@@ -33,21 +29,22 @@ class TelaEntrada(Screen[None]):
         yield Header()
         with Vertical(id="formulario"):
             yield Label("Produto (→ completa o nome)")
-            yield Input(id="produto", suggester=SuggestFromList(nomes, case_sensitive=False))
+            yield CampoTexto(id="produto", suggester=SuggestFromList(nomes, case_sensitive=False))
             yield Label("Quantidade")
-            yield Input(id="quantidade", placeholder="unidades inteiras")
+            yield CampoTexto(id="quantidade", placeholder="unidades inteiras")
             yield Label("Validade (em branco: não vence)")
-            yield Input(id="validade", placeholder="DD/MM/AAAA")
+            yield CampoTexto(id="validade", placeholder="DD/MM/AAAA")
             yield Label("Fornecedor (opcional)")
-            yield Input(id="fornecedor")
+            yield CampoTexto(id="fornecedor")
         yield LinhaMensagem()
+        yield self.indicador_de_modo()
         yield Footer()
 
     def on_mount(self) -> None:
-        self.query_one("#produto", Input).focus()
+        self.query_one("#produto", CampoTexto).focus()
 
     def on_input_submitted(self) -> None:
-        valor = {campo.id: campo.value for campo in self.query(Input)}
+        valor = {campo.id: campo.value for campo in self.query(CampoTexto)}
         try:
             resumo = self._servico.registrar_entrada(
                 valor["produto"],
@@ -65,6 +62,7 @@ class TelaEntrada(Screen[None]):
                 f"Entrada de {resumo.quantidade} un. de {resumo.produto} "
                 f"({validade}). Saldo: {resumo.saldo}."
             )
-            for campo in self.query(Input):
+            for campo in self.query(CampoTexto):
                 campo.clear()
-        self.query_one("#produto", Input).focus()
+            self.modo = Modo.NORMAL
+        self.query_one("#produto", CampoTexto).focus()

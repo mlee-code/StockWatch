@@ -1,18 +1,14 @@
 """Tela de estoque atual com os lotes do produto destacado (REQ-005)."""
 
-from typing import ClassVar
-
 from textual.app import ComposeResult
-from textual.binding import Binding, BindingType
-from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header, Label, Static
 
 from stockwatch.aplicacao.servico import ServicoEstoque
 from stockwatch.tui.formatos import validade_br
+from stockwatch.tui.modal import TabelaVim, TelaModal
 
 
-class TelaEstoque(Screen[None]):
-    BINDINGS: ClassVar[list[BindingType]] = [Binding("escape", "app.pop_screen", "Voltar")]
+class TelaEstoque(TelaModal):
     DEFAULT_CSS = """
     TelaEstoque #vazio { width: 1fr; height: 1fr; content-align: center middle; }
     TelaEstoque #estoque { height: 2fr; margin: 1 1 0 1; }
@@ -31,9 +27,10 @@ class TelaEstoque(Screen[None]):
             "Nenhum produto em estoque. Pressione Esc e depois e para registrar uma entrada.",
             id="vazio",
         )
-        yield DataTable(id="estoque", cursor_type="row")
+        yield TabelaVim(id="estoque", cursor_type="row")
         yield Label("Lotes do produto selecionado", id="titulo-lotes")
-        yield DataTable(id="lotes", cursor_type="row")
+        yield TabelaVim(id="lotes", cursor_type="row")
+        yield self.indicador_de_modo()
         yield Footer()
 
     def on_mount(self) -> None:

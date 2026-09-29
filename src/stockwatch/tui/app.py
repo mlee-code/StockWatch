@@ -4,6 +4,7 @@ from typing import ClassVar
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding, BindingType
+from textual.screen import Screen
 from textual.widgets import Footer, Header, Static
 
 from stockwatch.aplicacao.servico import ServicoEstoque
@@ -38,11 +39,23 @@ class StockWatchApp(App[None]):
         yield Static("p produtos  ·  e entrada  ·  t estoque  ·  q sair", id="boas-vindas")
         yield Footer()
 
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        # `q` só encerra a partir do painel inicial (UX_UI.md, "Modos").
+        if action == "quit" and len(self.screen_stack) > 1:
+            return False
+        return super().check_action(action, parameters)
+
+    def _abrir(self, tela: Screen[None]) -> None:
+        """Troca de tela sem empilhar: volta ao painel e abre a nova."""
+        while len(self.screen_stack) > 1:
+            self.pop_screen()
+        self.push_screen(tela)
+
     def action_produtos(self) -> None:
-        self.push_screen(TelaProdutos(self.servico))
+        self._abrir(TelaProdutos(self.servico))
 
     def action_entrada(self) -> None:
-        self.push_screen(TelaEntrada(self.servico))
+        self._abrir(TelaEntrada(self.servico))
 
     def action_estoque(self) -> None:
-        self.push_screen(TelaEstoque(self.servico))
+        self._abrir(TelaEstoque(self.servico))

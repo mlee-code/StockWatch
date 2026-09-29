@@ -1,20 +1,16 @@
 """Tela de produtos: cadastro e listagem (REQ-001, REQ-002)."""
 
-from typing import ClassVar
-
 from textual.app import ComposeResult
-from textual.binding import Binding, BindingType
 from textual.containers import Horizontal
-from textual.screen import Screen
-from textual.widgets import DataTable, Footer, Header, Input, Static
+from textual.widgets import DataTable, Footer, Header, Static
 
 from stockwatch.aplicacao.servico import ServicoEstoque
 from stockwatch.dominio.erros import ErroDominio
 from stockwatch.tui.mensagem import LinhaMensagem
+from stockwatch.tui.modal import CampoTexto, Modo, TabelaVim, TelaModal
 
 
-class TelaProdutos(Screen[None]):
-    BINDINGS: ClassVar[list[BindingType]] = [Binding("escape", "app.pop_screen", "Voltar")]
+class TelaProdutos(TelaModal):
     DEFAULT_CSS = """
     TelaProdutos #formulario { height: auto; padding: 1 1 0 1; }
     TelaProdutos #formulario Input { width: 1fr; }
@@ -30,21 +26,22 @@ class TelaProdutos(Screen[None]):
     def compose(self) -> ComposeResult:
         yield Header()
         with Horizontal(id="formulario"):
-            yield Input(placeholder="Nome do produto", id="nome")
-            yield Input(placeholder="Categoria (opcional)", id="categoria")
+            yield CampoTexto(placeholder="Nome do produto", id="nome")
+            yield CampoTexto(placeholder="Categoria (opcional)", id="categoria")
         yield LinhaMensagem()
         yield Static("Nenhum produto. Digite o nome acima e pressione Enter.", id="vazio")
-        yield DataTable(cursor_type="row")
+        yield TabelaVim(cursor_type="row")
+        yield self.indicador_de_modo()
         yield Footer()
 
     def on_mount(self) -> None:
         self.query_one(DataTable).add_columns("Nome", "Categoria", "Saldo")
         self._recarregar()
-        self.query_one("#nome", Input).focus()
+        self.query_one("#nome", CampoTexto).focus()
 
     def on_input_submitted(self) -> None:
-        nome = self.query_one("#nome", Input)
-        categoria = self.query_one("#categoria", Input)
+        nome = self.query_one("#nome", CampoTexto)
+        categoria = self.query_one("#categoria", CampoTexto)
         try:
             produto = self._servico.cadastrar_produto(nome.value, categoria.value)
         except ErroDominio as erro:
@@ -54,6 +51,7 @@ class TelaProdutos(Screen[None]):
             nome.clear()
             categoria.clear()
             self._recarregar()
+            self.modo = Modo.NORMAL
         nome.focus()
 
     def _recarregar(self) -> None:
