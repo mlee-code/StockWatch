@@ -11,7 +11,8 @@ from stockwatch.dominio.erros import ErroDominio
 from stockwatch.dominio.leitura import ler_motivo, ler_quantidade
 from stockwatch.tui.formatos import validade_br
 from stockwatch.tui.mensagem import LinhaMensagem
-from stockwatch.tui.modal import CampoTexto, Modo, TelaModal
+from stockwatch.tui.modal import CampoTexto
+from stockwatch.tui.telas.movimentacao import TelaMovimentacao
 
 
 def descrever_saida(resumo: ResumoSaida) -> str:
@@ -24,20 +25,13 @@ def descrever_saida(resumo: ResumoSaida) -> str:
     )
 
 
-class TelaSaida(TelaModal):
-    DEFAULT_CSS = """
-    TelaSaida #formulario { height: auto; width: 60; padding: 1 2; }
-    TelaSaida Label { margin-top: 1; }
-    """
-
+class TelaSaida(TelaMovimentacao):
     def __init__(self, servico: ServicoEstoque, produto: str | None = None) -> None:
-        super().__init__()
-        self._servico = servico
-        self._produto_inicial = produto
+        super().__init__(servico, produto)
         self.sub_title = "Registrar saída"
 
     def compose(self) -> ComposeResult:
-        nomes = [p.nome for p in self._servico.listar_produtos()]
+        nomes = self._nomes_dos_produtos()
         motivos = ["venda", "perda", "descarte por vencimento"]
         yield Header()
         with Vertical(id="formulario"):
@@ -51,24 +45,13 @@ class TelaSaida(TelaModal):
         yield self.indicador_de_modo()
         yield Footer()
 
-    def on_mount(self) -> None:
-        if self._produto_inicial:
-            self.query_one("#produto", CampoTexto).value = self._produto_inicial
-            self.query_one("#quantidade", CampoTexto).focus()
-        else:
-            self.query_one("#produto", CampoTexto).focus()
-
     def on_input_submitted(self) -> None:
-        valor = {campo.id: campo.value for campo in self.query(CampoTexto)}
+        valor = self._valores()
         try:
             resumo = self._servico.registrar_saida(
                 valor["produto"], ler_quantidade(valor["quantidade"]), ler_motivo(valor["motivo"])
             )
         except ErroDominio as erro:
-            self.query_one(LinhaMensagem).erro(str(erro))
+            self._falhou(str(erro))
         else:
-            self.query_one(LinhaMensagem).sucesso(descrever_saida(resumo))
-            for campo in self.query(CampoTexto):
-                campo.clear()
-            self.modo = Modo.NORMAL
-        self.query_one("#produto", CampoTexto).focus()
+            self._concluiu(descrever_saida(resumo))
