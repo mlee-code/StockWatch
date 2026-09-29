@@ -19,15 +19,17 @@ Este documento trata só do banco do produto. A fonte canônica do esquema físi
 | Tabela | Campo | Tipo | Regras |
 |---|---|---|---|
 | `categoria` | `id` | INTEGER PK | |
-| | `nome` | TEXT | NOT NULL, UNIQUE COLLATE NOCASE, 1–100 caracteres |
-| `fornecedor` | `id`, `nome` | idem a `categoria` | |
+| | `nome` | TEXT | NOT NULL, 1–100 caracteres, como digitado |
+| | `nome_chave` | TEXT | NOT NULL, UNIQUE; `nome` em `casefold()` |
+| `fornecedor` | `id`, `nome`, `nome_chave` | idem a `categoria` | |
 | `produto` | `id` | INTEGER PK | |
-| | `nome` | TEXT | NOT NULL, UNIQUE COLLATE NOCASE, 1–100 caracteres |
+| | `nome` | TEXT | NOT NULL, 1–100 caracteres, como digitado |
+| | `nome_chave` | TEXT | NOT NULL, UNIQUE; `nome` em `casefold()` |
 | | `categoria_id` | INTEGER | FK `categoria`, NULL permitido |
 | | `criado_em` | TEXT | ISO 8601 UTC |
 | `lote` | `id` | INTEGER PK | ordem de criação; desempate FEFO (H4) |
 | | `produto_id` | INTEGER | FK `produto`, NOT NULL |
-| | `validade` | TEXT | ISO `AAAA-MM-DD`, NOT NULL |
+| | `validade` | TEXT | ISO `AAAA-MM-DD`, NOT NULL, CHECK `validade = date(validade)` |
 | | `fornecedor_id` | INTEGER | FK `fornecedor`, NULL permitido |
 | `movimentacao` | `id` | INTEGER PK | |
 | | `tipo` | TEXT | CHECK `entrada` ou `saida` |
@@ -41,6 +43,9 @@ Este documento trata só do banco do produto. A fonte canônica do esquema físi
 | | `valor` | TEXT | NOT NULL; `dias_alerta` = `30` por padrão |
 
 CHECK de coerência: `(tipo = 'entrada' AND motivo IS NULL) OR (tipo = 'saida' AND motivo IS NOT NULL)`.
+
+## Unicidade de nomes
+`COLLATE NOCASE` do SQLite só ignora a caixa em letras ASCII: "Éclair" e "éCLAIR" seriam nomes distintos. Por isso a unicidade fica numa coluna `nome_chave`, com a mesma normalização do domínio (`NomeValido.chave`, `str.casefold()`), e o texto original é preservado em `nome`.
 
 ## Cardinalidades
 - categoria 1 — N produto

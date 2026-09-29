@@ -30,11 +30,14 @@ Abrir `stockwatch` → painel com resumo e alertas → `e` para entrada ou `s` p
 | Estado | Apresentação |
 |---|---|
 | Vazio | texto centralizado que explica a próxima ação (por exemplo: "Nenhum produto. Pressione `p` para cadastrar.") |
-| Erro de validação | notificação de erro com a mensagem do domínio; o campo com problema recebe o foco |
-| Sucesso | notificação curta; o formulário é limpo para a próxima operação |
+| Erro de validação | linha de mensagem (`#mensagem`) em vermelho com o texto do domínio; o foco volta ao primeiro campo |
+| Sucesso | linha de mensagem em verde; o formulário é limpo e o foco volta ao primeiro campo |
 | Alerta de validade | vencido em vermelho (`$error`), perto de vencer em amarelo (`$warning`), sempre também com texto, nunca só com a cor |
 
 ## Layout
 - Cabeçalho com o título e a tela atual; rodapé com os atalhos.
 - Tabelas (`DataTable`) para listas; `Input` e `Select` para formulários.
 - Tamanho mínimo do terminal: 80×24.
+
+## Tema
+Tema escuro neutro `stockwatch-neutro` (`src/stockwatch/tui/tema.py`): fundo, superfícies e cor primária em tons de cinza, sem cor dominante. A cor só aparece para estado: sucesso em verde, alerta em âmbar e erro em vermelho. Pedido do responsável em 2026-09-29, na revisão da V010-02.

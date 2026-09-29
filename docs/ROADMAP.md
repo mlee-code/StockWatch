@@ -12,8 +12,8 @@ A v0.1.0 entrega, em um único ciclo, a primeira versão utilizável: cadastro, 
 - Versão em construção: 0.1.0
 - Ciclo atual: CYC-001
 - Itens planejados: 8
-- Itens concluídos (`[x]`): 1
-- Percentual concluído: 12,5%
+- Itens concluídos (`[x]`): 3
+- Percentual concluído: 37,5%
 - Itens bloqueados: 0
 - Horas restantes estimadas: 10 a 16 h
 - Confiança da estimativa: baixa. As fatias ainda não foram medidas, e as partes 5 e 8 concentram o risco.
@@ -35,8 +35,8 @@ Saber quanto há de cada produto e o que está vencido ou perto de vencer, sem r
 Origem: `workspace/proposals/IMPLEMENTATION_PROPOSAL.md` (PROP-001). Branches e testes de cada item estão na proposta.
 
 - [x] V010-01 — Plano da versão (proposta, roadmap, decisões). Prioridade: Crítica. Ciclo-alvo: CYC-001. Versão-alvo: 0.1.0. Dependências: nenhuma. Teste: revisão humana. Estado: entregue.
-- [ ] V010-02 — Fundação: projeto Python, ferramentas, arquitetura, requisitos, modelo de dados, critérios de teste e TUI que abre. Prioridade: Crítica. Dependências: V010-01. Teste: smoke da TUI e verificação de ruff e mypy. Estado: planejado.
-- [ ] V010-03 — Cadastro e listagem de produtos. Prioridade: Crítica. Dependências: V010-02. Testes: unitários, integração e TUI. Estado: planejado.
+- [x] V010-02 — Fundação: projeto Python, ferramentas, arquitetura, requisitos, modelo de dados, critérios de teste e TUI que abre. Prioridade: Crítica. Dependências: V010-01. Teste: smoke da TUI e verificação de ruff e mypy. Estado: entregue (aprovado pelo responsável em 2026-09-29).
+- [x] V010-03 — Cadastro e listagem de produtos. Prioridade: Crítica. Dependências: V010-02. Testes: unitários, integração e TUI. Estado: entregue (aprovado pelo responsável em 2026-09-29).
 - [ ] V010-04 — Entrada com lote e validade + estoque atual. Prioridade: Crítica. Dependências: V010-03. Testes: unitários, integração e TUI. Estado: planejado.
 - [ ] V010-05 — Saída FEFO com motivo. Prioridade: Crítica. Dependências: V010-04. Testes: unitários, propriedades, integração e TUI. Estado: planejado.
 - [ ] V010-06 — Validades, alertas, configuração de N e painel. Prioridade: Alta. Dependências: V010-04. Testes: unitários, propriedades e TUI. Estado: planejado.

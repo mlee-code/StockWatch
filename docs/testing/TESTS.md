@@ -68,7 +68,15 @@ Cada arquivo de teste identifica seus casos como `TEST-<SUITE>-NNN` na docstring
 
 | ID | Verifica | Arquivo |
 |---|---|---|
-| TEST-TUI-001 | a aplicação abre com o título e fecha com `q` | `tests/tui/test_app.py` |
+| TEST-TUI-001, 002 | a aplicação abre, fecha com `q` e usa o tema neutro | `tests/tui/test_app.py` |
+| TEST-TUI-003 a 008 | tela de produtos: vazio, cadastro por teclado, erros, Esc | `tests/tui/test_tela_produtos.py` |
+| TEST-UNIT-001 a 006 | `NomeValido` (REQ-001 CA-1, H6) | `tests/unit/test_nome_valido.py` |
+| TEST-UNIT-010 a 016 | cadastro e listagem no serviço (REQ-001, 002) | `tests/unit/test_servico_produtos.py` |
+| TEST-UNIT-020 a 022 | local do banco (REQ-010 CA-3) | `tests/unit/test_main.py` |
+| TEST-INT-001 a 010 | migração, transações, unicidade e persistência de produtos | `tests/integracao/test_produtos_sqlite.py` |
+| TEST-INT-011 | fluxo TUI → SQLite com reinício | `tests/integracao/test_fluxo_produtos.py` |
+| TEST-INT-012 | rollback de migração com erro | `tests/integracao/test_migracoes.py` |
+| TEST-ARQ-001, 002 | camadas e dependências | `tests/arquitetura/test_dependencias.py` |
 
 ## Portões por parte
 Cada parte do roadmap só termina com: suíte padrão verde, ruff e mypy sem erros, e os tipos de teste que a parte exige presentes.
