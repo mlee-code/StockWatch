@@ -64,10 +64,10 @@ INSERT INTO configuracao (chave, valor) VALUES ('dias_alerta', '30');
 MIGRACOES: tuple[str, ...] = (_V1,)
 
 
-def migrar(conexao: sqlite3.Connection) -> None:
+def migrar(conexao: sqlite3.Connection, migracoes: tuple[str, ...] = MIGRACOES) -> None:
     """Aplica, cada uma em sua transação, as migrações pendentes."""
     versao: int = conexao.execute("PRAGMA user_version").fetchone()[0]
-    for numero, script in enumerate(MIGRACOES[versao:], start=versao + 1):
+    for numero, script in enumerate(migracoes[versao:], start=versao + 1):
         conexao.execute("BEGIN")
         try:
             for comando in _comandos(script):
