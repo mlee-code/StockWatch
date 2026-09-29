@@ -38,7 +38,7 @@ Origem: `workspace/proposals/IMPLEMENTATION_PROPOSAL.md` (PROP-001). Branches e 
 - [x] V010-02 — Fundação: projeto Python, ferramentas, arquitetura, requisitos, modelo de dados, critérios de teste e TUI que abre. Prioridade: Crítica. Dependências: V010-01. Teste: smoke da TUI e verificação de ruff e mypy. Estado: entregue (aprovado pelo responsável em 2026-09-29).
 - [x] V010-03 — Cadastro e listagem de produtos. Prioridade: Crítica. Dependências: V010-02. Testes: unitários, integração e TUI. Estado: entregue (aprovado pelo responsável em 2026-09-29).
 - [x] V010-04 — Entrada com lote e validade + estoque atual, com validade opcional (DECISION-007). Prioridade: Crítica. Dependências: V010-03. Testes: unitários, integração e TUI. Estado: entregue (aprovado pelo responsável em 2026-09-29).
-- [ ] V010-05 — Saída FEFO com motivo. Prioridade: Crítica. Dependências: V010-04. Testes: unitários, propriedades, integração e TUI. Estado: planejado.
+- [ ] V010-05 — Saída FEFO com motivo. Prioridade: Crítica. Dependências: V010-04. Testes: unitários, propriedades, integração e TUI. Estado: em validação.
 - [ ] V010-06 — Validades, alertas, configuração de N e painel. Prioridade: Alta. Dependências: V010-04. Testes: unitários, propriedades e TUI. Estado: planejado.
 - [ ] V010-07 — Histórico de movimentações. Prioridade: Média. Dependências: V010-05. Testes: integração e TUI. Estado: planejado.
 - [ ] V010-08 — Fuzzing, volume, profiling em `metadata`, README final e release. Prioridade: Alta. Dependências: V010-03 a V010-07. Testes: fuzzing, volume e benchmark. Estado: planejado.

@@ -30,3 +30,8 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 ## V010-10 — Edição de produto e atalhos com contexto
 - [x] TASK-100 — Serviço e SQLite: `editar_produto`, `buscar_por_id`, `atualizar`. Fonte: REQ-011. Testes: TEST-UNIT-060 a 066, TEST-INT-040 a 042.
 - [x] TASK-101 — TUI: edição na tela de produtos e `e` com o produto em foco. Fonte: REQ-011, REQ-012, UX_UI. Testes: TEST-TUI-040 a 045.
+
+## V010-05 — Saída FEFO com motivo
+- [x] TASK-050 — `planejar_saida`, `vencido`, `elegivel` (funções puras). Fonte: REQ-004, H1 a H5, DECISION-007. Testes: TEST-UNIT-070 a 076, TEST-PROP-001 a 004.
+- [x] TASK-051 — Serviço `registrar_saida` com relógio de data. Fonte: REQ-004, NFR-004. Testes: TEST-UNIT-080 a 084, TEST-INT-050 a 052.
+- [x] TASK-052 — Tela de saída, `ler_motivo` e `s` com contexto. Fonte: REQ-004, REQ-012, UX_UI. Testes: TEST-UNIT-036, 037, TEST-TUI-050 a 055.

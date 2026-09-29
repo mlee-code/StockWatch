@@ -87,6 +87,12 @@ Cada arquivo de teste identifica seus casos como `TEST-<SUITE>-NNN` na docstring
 | TEST-UNIT-060 a 066 | edição de produto no serviço (REQ-011) | `tests/unit/test_servico_edicao.py` |
 | TEST-INT-040 a 042 | edição de produto no SQLite (REQ-011) | `tests/integracao/test_edicao_sqlite.py` |
 | TEST-TUI-040 a 045 | edição na TUI e atalhos com contexto (REQ-011, 012) | `tests/tui/test_contexto_e_edicao.py` |
+| TEST-UNIT-070 a 076 | plano FEFO (REQ-004 CA-2 a CA-5, H1 a H4) | `tests/unit/test_fefo.py` |
+| TEST-PROP-001 a 004 | propriedades do FEFO, 500 exemplos cada | `tests/propriedades/test_fefo_propriedades.py` |
+| TEST-UNIT-080 a 084 | saídas no serviço (REQ-004) | `tests/unit/test_servico_saida.py` |
+| TEST-UNIT-036, 037 | leitura do motivo | `tests/unit/test_leitura.py` |
+| TEST-INT-050 a 052 | saídas no SQLite, atomicidade e invariante de saldo (DT-006, DT-007) | `tests/integracao/test_saidas_sqlite.py` |
+| TEST-TUI-050 a 055 | tela de saída e `s` com produto em foco | `tests/tui/test_tela_saida.py` |
 | TEST-ARQ-001, 002 | camadas e dependências | `tests/arquitetura/test_dependencias.py` |
 
 ## Portões por parte

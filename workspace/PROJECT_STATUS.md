@@ -11,7 +11,7 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-29.
 - V010-10 — Edição de produto e atalhos com contexto.
 
 ## Em andamento
-- V010-05 — Saída FEFO com motivo, branch `feat/saida-fefo`.
+- V010-05 — Saída FEFO com motivo, branch `feat/saida-fefo`: implementada, em validação.
 
 ## Próximas
 - V010-06 — Validades, alertas, configuração de N e painel.
