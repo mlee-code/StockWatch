@@ -1,5 +1,10 @@
 # StockWatch
 
+[![CI](https://github.com/mlee-code/StockWatch/actions/workflows/ci.yml/badge.svg)](https://github.com/mlee-code/StockWatch/actions/workflows/ci.yml)
+[![Licença: MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-blue.svg)](LICENSE)
+![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)
+![Versão 0.1.0](https://img.shields.io/badge/vers%C3%A3o-0.1.0-lightgrey.svg)
+
 Controle de estoque e validade com interface de terminal (TUI) para pequenos comércios: entradas por lote, saídas por **FEFO** (*First Expired, First Out*), alertas de vencimento e histórico, tudo local, rápido e operável só pelo teclado.
 
 ![Painel inicial](docs/imagens/painel.svg)
