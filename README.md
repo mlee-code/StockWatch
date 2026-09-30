@@ -100,3 +100,7 @@ python3 -m venv .venv
 ```
 
 O projeto segue um processo documental versionado: requisitos, decisões, roadmap e testes em [`docs/`](docs/), e rastreabilidade e métricas no banco [`metadata/`](metadata/). Commits seguem o [Conventional Commits](https://www.conventionalcommits.org/pt-br/), e o CI roda a cada push.
+
+## Licença
+
+[MIT](LICENSE) © 2026 M Lee
