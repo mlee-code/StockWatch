@@ -1,7 +1,7 @@
 """Casos de uso do estoque."""
 
 from collections.abc import Callable
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 
 from stockwatch.aplicacao.dtos import (
     AlertaValidade,
@@ -174,7 +174,7 @@ class ServicoEstoque:
         hoje = self._hoje()
         with self._nova_unidade() as uow:
             dias_alerta = uow.configuracao.dias_alerta()
-            lotes = uow.lotes.todos_com_saldo()
+            lotes = uow.lotes.com_saldo_vencendo_ate(hoje + timedelta(days=dias_alerta))
         alertas = [
             AlertaValidade(
                 produto_id=item.lote.produto_id,
@@ -195,12 +195,13 @@ class ServicoEstoque:
         hoje = self._hoje()
         with self._nova_unidade() as uow:
             dias_alerta = uow.configuracao.dias_alerta()
-            produtos = uow.produtos.listar_resumos()
-            lotes = uow.lotes.todos_com_saldo()
+            produtos = uow.produtos.contar()
+            unidades = uow.lotes.total_de_unidades()
+            lotes = uow.lotes.com_saldo_vencendo_ate(hoje + timedelta(days=dias_alerta))
         situacoes = [classificar(item.lote.validade, hoje, dias_alerta) for _, item in lotes]
         return Painel(
-            produtos=len(produtos),
-            unidades=sum(p.saldo for p in produtos),
+            produtos=produtos,
+            unidades=unidades,
             lotes_vencidos=situacoes.count(Situacao.VENCIDO),
             lotes_perto=situacoes.count(Situacao.PERTO),
             dias_alerta=dias_alerta,

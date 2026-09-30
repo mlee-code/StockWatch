@@ -27,6 +27,8 @@ class RepositorioProdutos(Protocol):
         """Produtos em ordem alfabética, sem diferenciar maiúsculas, com saldo atual."""
         ...
 
+    def contar(self) -> int: ...
+
 
 class RepositorioLotes(Protocol):
     def adicionar(
@@ -41,9 +43,14 @@ class RepositorioLotes(Protocol):
         """Produtos com saldo > 0, em ordem alfabética (REQ-005 CA-1)."""
         ...
 
-    def todos_com_saldo(self) -> list[tuple[str, LoteComSaldo]]:
-        """Todos os lotes com saldo > 0, com o nome do produto (REQ-006, REQ-009)."""
+    def com_saldo_vencendo_ate(self, limite: date) -> list[tuple[str, LoteComSaldo]]:
+        """Lotes com saldo > 0 e validade até `limite`, com o nome do produto.
+
+        Só pré-filtra candidatos a alerta no banco; a classificação continua no domínio.
+        """
         ...
+
+    def total_de_unidades(self) -> int: ...
 
 
 class RepositorioConfiguracao(Protocol):

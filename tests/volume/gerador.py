@@ -2,7 +2,8 @@
 
 Os dados são inseridos direto em SQL, numa transação, para a geração levar segundos
 e não horas. O resultado é coerente com as regras: cada produto recebe lotes
-(entradas) e saídas que os consomem em ordem FEFO, sem saldo negativo.
+(entradas) e vendas que consomem, em ordem FEFO, só os lotes não vencidos (H1),
+sem saldo negativo. Os lotes vencidos ficam em estoque e alimentam os alertas.
 """
 
 import random
@@ -44,7 +45,7 @@ def gerar(caminho: Path, semente: int = 20260930) -> None:
         validades = sorted(
             (HOJE + timedelta(days=aleatorio.randint(-60, 300)) for _ in range(LOTES_POR_PRODUTO)),
         )
-        ids_do_produto = []
+        vendaveis = []
         for indice, validade in enumerate(validades):
             lote_id += 1
             movimentacao_id += 1
@@ -53,13 +54,14 @@ def gerar(caminho: Path, semente: int = 20260930) -> None:
             lotes.append((lote_id, produto, None if sem_validade else validade.isoformat()))
             movimentacoes.append((movimentacao_id, "entrada", None, produto, instante.isoformat()))
             linhas.append((movimentacao_id, lote_id, UNIDADES_POR_LOTE))
-            ids_do_produto.append(lote_id)
+            if sem_validade or validade >= HOJE:
+                vendaveis.append(lote_id)
         for saida in range(SAIDAS_POR_PRODUTO):
             movimentacao_id += 1
             instante += timedelta(seconds=1)
             venda = (movimentacao_id, "saida", "venda", produto, instante.isoformat())
             movimentacoes.append(venda)
-            linhas.append((movimentacao_id, ids_do_produto[saida // 3], UNIDADES_POR_SAIDA))
+            linhas.append((movimentacao_id, vendaveis[saida // 3], UNIDADES_POR_SAIDA))
     conexao.executemany("INSERT INTO lote (id, produto_id, validade) VALUES (?, ?, ?)", lotes)
     conexao.executemany(
         "INSERT INTO movimentacao (id, tipo, motivo, produto_id, ocorrida_em)"

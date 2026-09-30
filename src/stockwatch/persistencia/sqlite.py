@@ -136,6 +136,9 @@ class RepositorioProdutosSqlite:
             (produto.nome.valor, produto.nome.chave, categoria_id, produto.id),
         )
 
+    def contar(self) -> int:
+        return int(self._conexao.execute("SELECT count(*) FROM produto").fetchone()[0])
+
     def possui_movimentacoes(self, produto_id: int) -> bool:
         linha = self._conexao.execute(
             "SELECT EXISTS (SELECT 1 FROM movimentacao WHERE produto_id = ?)", (produto_id,)
@@ -155,14 +158,21 @@ class RepositorioProdutosSqlite:
 
     def listar_resumos(self) -> list[ResumoProduto]:
         linhas = self._conexao.execute(
-            f"""
-            WITH {_SALDO_LOTE}
-            SELECT p.id, p.nome, c.nome, COALESCE(SUM(s.saldo), 0)
+            # O saldo do produto soma as movimentações dele direto (movimentacao.produto_id),
+            # sem passar por lote: metade do tempo da versão por lote com 1 milhão de linhas.
+            """
+            WITH saldo_produto AS (
+                SELECT m.produto_id,
+                       SUM(CASE m.tipo WHEN 'entrada' THEN ml.quantidade
+                                       ELSE -ml.quantidade END) AS saldo
+                FROM movimentacao m
+                JOIN movimentacao_lote ml ON ml.movimentacao_id = m.id
+                GROUP BY m.produto_id
+            )
+            SELECT p.id, p.nome, c.nome, COALESCE(s.saldo, 0)
             FROM produto p
             LEFT JOIN categoria c ON c.id = p.categoria_id
-            LEFT JOIN lote l ON l.produto_id = p.id
-            LEFT JOIN saldo_lote s ON s.lote_id = l.id
-            GROUP BY p.id
+            LEFT JOIN saldo_produto s ON s.produto_id = p.id
             ORDER BY p.nome_chave
             """
         ).fetchall()
@@ -210,18 +220,27 @@ class RepositorioLotesSqlite:
             for lote_id, validade, fornecedor, saldo in linhas
         ]
 
-    def todos_com_saldo(self) -> list[tuple[str, LoteComSaldo]]:
+    def com_saldo_vencendo_ate(self, limite: date) -> list[tuple[str, LoteComSaldo]]:
+        # Filtra primeiro pela validade (índice idx_lote_fefo) e só então calcula o saldo
+        # de cada candidato pelo índice de movimentacao_lote: evita agregar o banco inteiro.
         linhas = self._conexao.execute(
-            f"""
-            WITH {_SALDO_LOTE}
-            SELECT p.nome, l.id, l.produto_id, l.validade, f.nome, s.saldo
-            FROM saldo_lote s
-            JOIN lote l ON l.id = s.lote_id
-            JOIN produto p ON p.id = l.produto_id
-            LEFT JOIN fornecedor f ON f.id = l.fornecedor_id
-            WHERE s.saldo > 0
-            ORDER BY l.validade IS NULL, l.validade, l.id
             """
+            SELECT nome, id, produto_id, validade, fornecedor, saldo FROM (
+                SELECT p.nome, l.id, l.produto_id, l.validade, f.nome AS fornecedor,
+                       (SELECT SUM(CASE m.tipo WHEN 'entrada' THEN ml.quantidade
+                                               ELSE -ml.quantidade END)
+                        FROM movimentacao_lote ml
+                        JOIN movimentacao m ON m.id = ml.movimentacao_id
+                        WHERE ml.lote_id = l.id) AS saldo
+                FROM lote l
+                JOIN produto p ON p.id = l.produto_id
+                LEFT JOIN fornecedor f ON f.id = l.fornecedor_id
+                WHERE l.validade IS NOT NULL AND l.validade <= ?
+            )
+            WHERE saldo > 0
+            ORDER BY validade, id
+            """,
+            (limite.isoformat(),),
         ).fetchall()
         return [
             (
@@ -233,6 +252,16 @@ class RepositorioLotesSqlite:
             )
             for produto, lote_id, produto_id, validade, fornecedor, saldo in linhas
         ]
+
+    def total_de_unidades(self) -> int:
+        linha = self._conexao.execute(
+            """
+            SELECT COALESCE(SUM(CASE m.tipo WHEN 'entrada' THEN ml.quantidade
+                                            ELSE -ml.quantidade END), 0)
+            FROM movimentacao_lote ml JOIN movimentacao m ON m.id = ml.movimentacao_id
+            """
+        ).fetchone()
+        return int(linha[0])
 
     def resumo_estoque(self) -> list[ItemEstoque]:
         linhas = self._conexao.execute(

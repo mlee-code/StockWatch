@@ -65,6 +65,9 @@ class RepositorioProdutosEmMemoria:
     def buscar_por_id(self, produto_id: int) -> Produto | None:
         return self._uow.estado.produtos.get(produto_id)
 
+    def contar(self) -> int:
+        return len(self._uow.estado.produtos)
+
     def atualizar(self, produto: Produto) -> None:
         self._uow.estado.produtos[produto.id] = produto
 
@@ -101,13 +104,18 @@ class RepositorioLotesEmMemoria:
         com_saldo = (LoteComSaldo(lote, estado.saldo_do_lote(lote.id)) for lote in lotes)
         return [item for item in com_saldo if item.saldo > 0]
 
-    def todos_com_saldo(self) -> list[tuple[str, LoteComSaldo]]:
+    def com_saldo_vencendo_ate(self, limite: date) -> list[tuple[str, LoteComSaldo]]:
         estado = self._uow.estado
         return [
             (estado.produtos[item.lote.produto_id].nome.valor, item)
             for produto_id in estado.produtos
             for item in self.com_saldo(produto_id)
+            if item.lote.validade is not None and item.lote.validade <= limite
         ]
+
+    def total_de_unidades(self) -> int:
+        estado = self._uow.estado
+        return sum(estado.saldo_do_lote(lote_id) for lote_id in estado.lotes)
 
     def resumo_estoque(self) -> list[ItemEstoque]:
         estado = self._uow.estado
