@@ -38,16 +38,15 @@ Inspirados no vim e no lazygit. O modo atual aparece na base da tela (`NORMAL` /
 | | `Enter` | confirma o formulário e volta ao modo normal |
 | | `Esc` | volta ao modo normal |
 
-No modo normal, as letras nunca alteram o conteúdo dos campos.
+No modo normal, as letras nunca alteram o conteúdo dos campos. `q` sai do programa somente a partir do painel inicial.
 
 ### Contexto e edição (DECISION-009)
 - Produtos: com uma linha da tabela em foco, `Enter` carrega o produto no formulário ("Editando: …"). `Enter` no formulário salva, e `Esc` cancela a edição antes de voltar ao painel.
 - Com uma linha de produto em foco (produtos ou estoque), `e` e `s` abrem a entrada ou a saída com o produto preenchido e o foco na quantidade.
-
 - Produtos: com uma linha em foco, `d` pede confirmação para excluir o produto (`s` confirma; `n` ou `Esc` cancela). Produtos com movimentações não podem ser excluídos (DECISION-010).
 
 ### Saída
-O motivo é digitado pela inicial ou pelo nome: `v` venda, `p` perda, `d` descarte por vencimento. Em branco, vale venda, a saída mais frequente. A mensagem de sucesso lista quanto saiu de cada lote e o saldo restante. `q` sai do programa somente a partir do painel inicial.
+O motivo é digitado pela inicial ou pelo nome: `v` venda, `p` perda, `d` descarte por vencimento. Em branco, vale venda, a saída mais frequente. A mensagem de sucesso lista quanto saiu de cada lote e o saldo restante.
 
 ## Estados
 
