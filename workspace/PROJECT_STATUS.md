@@ -13,7 +13,7 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-30.
 - V010-11 — Exclusão de produto.
 
 ## Em andamento
-- V010-06 — Validades, alertas, configuração de N e painel, branch `feat/validades-alertas`.
+- V010-06 — Validades, alertas, configuração de N e painel, branch `feat/validades-alertas`: implementada, em validação.
 
 ## Próximas
 - V010-07 — Histórico de movimentações.
