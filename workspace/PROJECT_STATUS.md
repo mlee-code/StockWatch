@@ -14,7 +14,7 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-30.
 - V010-06 — Validades, alertas, configuração e painel.
 
 ## Em andamento
-- V010-07 — Histórico de movimentações, branch `feat/historico`.
+- V010-07 — Histórico de movimentações, branch `feat/historico`: implementada, em validação.
 
 ## Próximas
 - V010-08 — Fuzzing, volume, profiling, README e release.
