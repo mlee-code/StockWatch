@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "stockwatch"
-version = "0.1.0.dev0"
+version = "0.1.0"
 description = "Controle de estoque e validade com interface de terminal para pequenos comércios."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -50,8 +50,13 @@ ignore = ["N818"]
 [tool.mypy]
 python_version = "3.12"
 strict = true
-files = ["src", "tests"]
+files = ["src", "tests", "scripts"]
 
 [[tool.mypy.overrides]]
 module = ["hypothesis.*"]
 follow_untyped_imports = true
+
+[[tool.mypy.overrides]]
+# pytest-benchmark não publica anotações de tipo para BenchmarkFixture.pedantic.
+module = ["tests.desempenho.*"]
+disallow_untyped_calls = false

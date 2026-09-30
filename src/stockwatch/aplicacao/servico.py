@@ -1,7 +1,7 @@
 """Casos de uso do estoque."""
 
 from collections.abc import Callable
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 
 from stockwatch.aplicacao.dtos import (
     AlertaValidade,
@@ -23,7 +23,7 @@ from stockwatch.dominio.erros import (
 from stockwatch.dominio.estoque import MotivoSaida, Movimentacao, TipoMovimentacao
 from stockwatch.dominio.fefo import planejar_saida
 from stockwatch.dominio.produto import Produto
-from stockwatch.dominio.validade import DIAS_ALERTA_MAXIMO, Situacao, classificar
+from stockwatch.dominio.validade import DIAS_ALERTA_MAXIMO, classificar
 from stockwatch.dominio.valores import NomeValido
 
 
@@ -169,12 +169,14 @@ class ServicoEstoque:
             uow.confirmar()
         return dias
 
-    def validades(self) -> list[AlertaValidade]:
-        """REQ-006: lotes com saldo vencidos ou perto de vencer, do mais urgente."""
+    def validades(self, limite: int = 500) -> list[AlertaValidade]:
+        """REQ-006: lotes com saldo vencidos ou perto de vencer, os `limite` mais urgentes."""
         hoje = self._hoje()
         with self._nova_unidade() as uow:
             dias_alerta = uow.configuracao.dias_alerta()
-            lotes = uow.lotes.todos_com_saldo()
+            lotes = uow.lotes.com_saldo_vencendo_ate(
+                hoje + timedelta(days=dias_alerta), maximo=limite
+            )
         alertas = [
             AlertaValidade(
                 produto_id=item.lote.produto_id,
@@ -195,14 +197,16 @@ class ServicoEstoque:
         hoje = self._hoje()
         with self._nova_unidade() as uow:
             dias_alerta = uow.configuracao.dias_alerta()
-            produtos = uow.produtos.listar_resumos()
-            lotes = uow.lotes.todos_com_saldo()
-        situacoes = [classificar(item.lote.validade, hoje, dias_alerta) for _, item in lotes]
+            produtos = uow.produtos.contar()
+            unidades = uow.lotes.total_de_unidades()
+            vencidos, perto = uow.lotes.contar_vencendo_ate(
+                hoje, hoje + timedelta(days=dias_alerta)
+            )
         return Painel(
-            produtos=len(produtos),
-            unidades=sum(p.saldo for p in produtos),
-            lotes_vencidos=situacoes.count(Situacao.VENCIDO),
-            lotes_perto=situacoes.count(Situacao.PERTO),
+            produtos=produtos,
+            unidades=unidades,
+            lotes_vencidos=vencidos,
+            lotes_perto=perto,
             dias_alerta=dias_alerta,
         )
 

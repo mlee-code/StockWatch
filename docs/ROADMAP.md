@@ -12,12 +12,12 @@ A v0.1.0 entrega, em um único ciclo, a primeira versão utilizável: cadastro, 
 - Versão em construção: 0.1.0
 - Ciclo atual: CYC-001
 - Itens planejados: 11
-- Itens concluídos (`[x]`): 10
-- Percentual concluído: 91%
+- Itens concluídos (`[x]`): 11
+- Percentual concluído: 100%
 - Itens bloqueados: 0
-- Horas restantes estimadas: 10 a 16 h
-- Confiança da estimativa: baixa. As fatias ainda não foram medidas, e as partes 5 e 8 concentram o risco.
-- Previsão e limitações: conclusão até 2026-09-30 se o ritmo se mantiver; a estimativa não é linear.
+- Horas restantes estimadas: 0 h (falta só o review humano da versão)
+- Confiança da estimativa: alta; todos os itens entregues.
+- Previsão e limitações: versão 0.1.0 concluída em 2026-09-30, dentro do prazo (CON-006).
 
 ---
 
@@ -41,7 +41,7 @@ Origem: `workspace/proposals/IMPLEMENTATION_PROPOSAL.md` (PROP-001). Branches e 
 - [x] V010-05 — Saída FEFO com motivo. Prioridade: Crítica. Dependências: V010-04. Testes: unitários, propriedades, integração e TUI. Estado: entregue (aprovado pelo responsável em 2026-09-29).
 - [x] V010-06 — Validades, alertas, configuração de N e painel. Prioridade: Alta. Dependências: V010-04. Testes: unitários, propriedades e TUI. Estado: entregue (aprovado pelo responsável em 2026-09-30).
 - [x] V010-07 — Histórico de movimentações. Prioridade: Média. Dependências: V010-05. Testes: integração e TUI. Estado: entregue (aprovado pelo responsável em 2026-09-30).
-- [ ] V010-08 — Fuzzing, volume, profiling em `metadata`, README final e release. Prioridade: Alta. Dependências: V010-03 a V010-07. Testes: fuzzing, volume e benchmark. Estado: em desenvolvimento.
+- [x] V010-08 — Fuzzing, volume, profiling em `metadata`, README final e release. Prioridade: Alta. Dependências: V010-03 a V010-07. Testes: fuzzing, volume e benchmark. Estado: entregue (release 0.1.0, commit `b9ec181`, a pedido do responsável em 2026-09-30).
 - [x] V010-09 — Modos normal e inserção na TUI, como no vim (FR-002, DECISION-008). Prioridade: Alta. Ciclo-alvo: CYC-001. Versão-alvo: 0.1.0. Dependências: V010-04. Testes: TUI. Estado: entregue (aprovado pelo responsável em 2026-09-29).
 - [x] V010-10 — Edição de produto e atalhos com contexto (FR-003, FR-004, DECISION-009). Prioridade: Alta. Ciclo-alvo: CYC-001. Versão-alvo: 0.1.0. Dependências: V010-09. Testes: unitários, integração e TUI. Estado: entregue (aprovado pelo responsável em 2026-09-29).
 - [x] V010-11 — Exclusão de produto sem movimentações, com confirmação (FR-005, DECISION-010). Prioridade: Média. Ciclo-alvo: CYC-001. Versão-alvo: 0.1.0. Dependências: V010-10. Testes: unitários, integração e TUI. Estado: entregue (aprovado pelo responsável em 2026-09-30).
@@ -50,16 +50,16 @@ Origem: `workspace/proposals/IMPLEMENTATION_PROPOSAL.md` (PROP-001). Branches e 
 Ver "Não incluído" em PROP-001.
 
 ## Critérios de conclusão
-- [ ] Fluxo principal completo operável pela TUI.
-- [ ] Todos os tipos de teste presentes e passando.
-- [ ] README com instalação, uso e capturas da TUI.
-- [ ] Histórico Git limpo, em Conventional Commits.
+- [x] Fluxo principal completo operável pela TUI.
+- [x] Todos os tipos de teste presentes e passando.
+- [x] README com instalação, uso e capturas da TUI.
+- [x] Histórico Git limpo, em Conventional Commits.
 
 ## Riscos
 Ver "Riscos e mitigação" em PROP-001.
 
 ## Estado
-Em desenvolvimento
+Entregue; aguardando o review humano (`workspace/reviews/VERSION_REVIEW.md`)
 
 ## Datas
 - Início: 2026-09-28

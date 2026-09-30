@@ -50,3 +50,10 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 - [x] TASK-071 — TUI: tela de histórico (`m`) em hora local. Fonte: REQ-008, UX_UI. Testes: TEST-TUI-090 a 093.
 - [x] TASK-072 — Painel: quadro na largura toda e texto centralizado (pedido do responsável). Testes: TEST-TUI-078.
 - [x] TASK-073 — `scripts/verificar.sh`: portão local igual ao CI. Fonte: ENGINEERING_PRACTICES.
+
+## V010-08 — Fuzzing, volume, profiling, README e release
+- [x] TASK-080 — Fuzzing dos leitores e máquina de estados sobre SQLite. Fonte: SUITE-FUZZ. Testes: TEST-FUZZ-001, 002.
+- [x] TASK-081 — Gerador de volume e metas de NFR-003. Fonte: SUITE-VOL, DT-006, DT-010. Testes: TEST-VOL-001 a 006.
+- [x] TASK-082 — Otimizações guiadas por cProfile (painel, validades, produtos) e limite de alertas. Fonte: NFR-003, REQ-006 CA-5. Testes: TEST-UNIT-115, SUITE-VOL.
+- [x] TASK-083 — Benchmarks e registro de métricas no metadata. Fonte: DECISION-003. Testes: TEST-DES-001 a 003.
+- [x] TASK-084 — README com capturas, CHANGELOG derivado dos commits, versão 0.1.0 e job de volume sob demanda no CI.

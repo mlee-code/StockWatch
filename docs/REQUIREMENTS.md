@@ -38,6 +38,7 @@ O operador registra uma saída com produto, quantidade e motivo.
 - CA-2: um lote está **perto de vencer** quando faltam de 0 a N dias para a validade.
 - CA-3: lista os lotes com saldo vencidos e perto de vencer, ordenados por validade.
 - CA-4: lotes sem saldo e lotes sem validade não geram alerta.
+- CA-5: a tela mostra os 500 alertas mais urgentes; o painel conta todos. Com o volume de NFR-003 podem existir dezenas de milhares de alertas, e carregar todos passaria da meta de 1 s.
 
 ### REQ-007 — Configurar antecedência do alerta
 - CA-1: N é um inteiro de 0 a 365, alterado pela TUI; o padrão é 30.
