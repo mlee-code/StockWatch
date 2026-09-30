@@ -41,6 +41,16 @@ class RepositorioLotes(Protocol):
         """Produtos com saldo > 0, em ordem alfabética (REQ-005 CA-1)."""
         ...
 
+    def todos_com_saldo(self) -> list[tuple[str, LoteComSaldo]]:
+        """Todos os lotes com saldo > 0, com o nome do produto (REQ-006, REQ-009)."""
+        ...
+
+
+class RepositorioConfiguracao(Protocol):
+    def dias_alerta(self) -> int: ...
+
+    def definir_dias_alerta(self, dias: int) -> None: ...
+
 
 class RepositorioMovimentacoes(Protocol):
     def registrar(self, movimentacao: Movimentacao) -> int: ...
@@ -57,6 +67,9 @@ class UnidadeDeTrabalho(Protocol):
 
     @property
     def movimentacoes(self) -> RepositorioMovimentacoes: ...
+
+    @property
+    def configuracao(self) -> RepositorioConfiguracao: ...
 
     def __enter__(self) -> Self: ...
 

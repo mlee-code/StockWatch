@@ -14,6 +14,7 @@ from stockwatch.dominio.estoque import (
     ordem_fefo,
 )
 from stockwatch.dominio.produto import Produto
+from stockwatch.dominio.validade import DIAS_ALERTA_PADRAO
 from stockwatch.dominio.valores import NomeValido
 
 
@@ -22,6 +23,7 @@ class EstadoEmMemoria:
     produtos: dict[int, Produto] = field(default_factory=dict)
     lotes: dict[int, Lote] = field(default_factory=dict)
     movimentacoes: list[Movimentacao] = field(default_factory=list)
+    dias_alerta: int = DIAS_ALERTA_PADRAO
 
     def copia(self) -> "EstadoEmMemoria":
         return replace(
@@ -99,6 +101,14 @@ class RepositorioLotesEmMemoria:
         com_saldo = (LoteComSaldo(lote, estado.saldo_do_lote(lote.id)) for lote in lotes)
         return [item for item in com_saldo if item.saldo > 0]
 
+    def todos_com_saldo(self) -> list[tuple[str, LoteComSaldo]]:
+        estado = self._uow.estado
+        return [
+            (estado.produtos[item.lote.produto_id].nome.valor, item)
+            for produto_id in estado.produtos
+            for item in self.com_saldo(produto_id)
+        ]
+
     def resumo_estoque(self) -> list[ItemEstoque]:
         estado = self._uow.estado
         itens = []
@@ -114,6 +124,17 @@ class RepositorioLotesEmMemoria:
                     )
                 )
         return itens
+
+
+class RepositorioConfiguracaoEmMemoria:
+    def __init__(self, uow: "UnidadeDeTrabalhoEmMemoria") -> None:
+        self._uow = uow
+
+    def dias_alerta(self) -> int:
+        return self._uow.estado.dias_alerta
+
+    def definir_dias_alerta(self, dias: int) -> None:
+        self._uow.estado.dias_alerta = dias
 
 
 class RepositorioMovimentacoesEmMemoria:
@@ -135,6 +156,7 @@ class UnidadeDeTrabalhoEmMemoria:
         self.produtos = RepositorioProdutosEmMemoria(self)
         self.lotes = RepositorioLotesEmMemoria(self)
         self.movimentacoes = RepositorioMovimentacoesEmMemoria(self)
+        self.configuracao = RepositorioConfiguracaoEmMemoria(self)
 
     def __enter__(self) -> Self:
         return self

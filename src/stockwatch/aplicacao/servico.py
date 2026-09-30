@@ -4,7 +4,9 @@ from collections.abc import Callable
 from datetime import UTC, date, datetime
 
 from stockwatch.aplicacao.dtos import (
+    AlertaValidade,
     ItemEstoque,
+    Painel,
     ResumoEntrada,
     ResumoProduto,
     ResumoSaida,
@@ -12,6 +14,7 @@ from stockwatch.aplicacao.dtos import (
 )
 from stockwatch.aplicacao.portas import UnidadeDeTrabalho
 from stockwatch.dominio.erros import (
+    DiasAlertaInvalido,
     ProdutoComMovimentacoes,
     ProdutoDuplicado,
     ProdutoInexistente,
@@ -19,6 +22,7 @@ from stockwatch.dominio.erros import (
 from stockwatch.dominio.estoque import MotivoSaida, Movimentacao, TipoMovimentacao
 from stockwatch.dominio.fefo import planejar_saida
 from stockwatch.dominio.produto import Produto
+from stockwatch.dominio.validade import DIAS_ALERTA_MAXIMO, Situacao, classificar
 from stockwatch.dominio.valores import NomeValido
 
 
@@ -142,6 +146,59 @@ class ServicoEstoque:
         """REQ-005 CA-2."""
         with self._nova_unidade() as uow:
             return [SaldoLote.de(item) for item in uow.lotes.com_saldo(produto_id)]
+
+    def dias_alerta(self) -> int:
+        """REQ-007."""
+        with self._nova_unidade() as uow:
+            return uow.configuracao.dias_alerta()
+
+    def configurar_dias_alerta(self, dias: int) -> int:
+        """REQ-007: antecedência de 0 a 365 dias, persistida."""
+        if not 0 <= dias <= DIAS_ALERTA_MAXIMO:
+            raise DiasAlertaInvalido(
+                f"A antecedência deve ser um número inteiro de 0 a {DIAS_ALERTA_MAXIMO} dias."
+            )
+        with self._nova_unidade() as uow:
+            uow.configuracao.definir_dias_alerta(dias)
+            uow.confirmar()
+        return dias
+
+    def validades(self) -> list[AlertaValidade]:
+        """REQ-006: lotes com saldo vencidos ou perto de vencer, do mais urgente."""
+        hoje = self._hoje()
+        with self._nova_unidade() as uow:
+            dias_alerta = uow.configuracao.dias_alerta()
+            lotes = uow.lotes.todos_com_saldo()
+        alertas = [
+            AlertaValidade(
+                produto_id=item.lote.produto_id,
+                produto=produto,
+                validade=item.lote.validade,
+                saldo=item.saldo,
+                situacao=situacao,
+                dias=(item.lote.validade - hoje).days,
+            )
+            for produto, item in lotes
+            if item.lote.validade is not None
+            and (situacao := classificar(item.lote.validade, hoje, dias_alerta)).e_alerta
+        ]
+        return sorted(alertas, key=lambda a: (a.validade, a.produto.casefold()))
+
+    def painel(self) -> Painel:
+        """REQ-009: resumo do estoque e dos alertas."""
+        hoje = self._hoje()
+        with self._nova_unidade() as uow:
+            dias_alerta = uow.configuracao.dias_alerta()
+            produtos = uow.produtos.listar_resumos()
+            lotes = uow.lotes.todos_com_saldo()
+        situacoes = [classificar(item.lote.validade, hoje, dias_alerta) for _, item in lotes]
+        return Painel(
+            produtos=len(produtos),
+            unidades=sum(p.saldo for p in produtos),
+            lotes_vencidos=situacoes.count(Situacao.VENCIDO),
+            lotes_perto=situacoes.count(Situacao.PERTO),
+            dias_alerta=dias_alerta,
+        )
 
     @staticmethod
     def _produto_existente(uow: UnidadeDeTrabalho, nome: NomeValido) -> Produto:
