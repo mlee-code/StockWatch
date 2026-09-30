@@ -1,10 +1,10 @@
 """Dados imutáveis entregues à interface; não expõem entidades do domínio."""
 
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from typing import Self
 
-from stockwatch.dominio.estoque import LoteComSaldo, MotivoSaida
+from stockwatch.dominio.estoque import LoteComSaldo, MotivoSaida, TipoMovimentacao
 from stockwatch.dominio.produto import Produto
 from stockwatch.dominio.validade import Situacao
 
@@ -102,3 +102,15 @@ class Painel:
     lotes_vencidos: int
     lotes_perto: int
     dias_alerta: int
+
+
+@dataclass(frozen=True, slots=True)
+class ItemHistorico:
+    """Uma movimentação, para o histórico somente leitura (REQ-008)."""
+
+    movimentacao_id: int
+    ocorrida_em: datetime
+    tipo: TipoMovimentacao
+    motivo: MotivoSaida | None
+    produto: str
+    quantidade: int

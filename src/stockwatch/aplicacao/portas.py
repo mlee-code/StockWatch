@@ -4,7 +4,7 @@ from datetime import date
 from types import TracebackType
 from typing import Protocol, Self
 
-from stockwatch.aplicacao.dtos import ItemEstoque, ResumoProduto
+from stockwatch.aplicacao.dtos import ItemEstoque, ItemHistorico, ResumoProduto
 from stockwatch.dominio.estoque import Lote, LoteComSaldo, Movimentacao
 from stockwatch.dominio.produto import Produto
 from stockwatch.dominio.valores import NomeValido
@@ -54,6 +54,10 @@ class RepositorioConfiguracao(Protocol):
 
 class RepositorioMovimentacoes(Protocol):
     def registrar(self, movimentacao: Movimentacao) -> int: ...
+
+    def recentes(self, limite: int, produto_id: int | None = None) -> list[ItemHistorico]:
+        """Da mais recente para a mais antiga; empate pela ordem de registro (REQ-008)."""
+        ...
 
 
 class UnidadeDeTrabalho(Protocol):
