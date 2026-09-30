@@ -19,7 +19,7 @@ Abrir `stockwatch` → painel com resumo e alertas → `e` para entrada ou `s` p
 | `s` | Registrar saída | REQ-004 |
 | `t` | Estoque atual | REQ-005 |
 | `v` | Validades | REQ-006 |
-| `h` | Histórico | REQ-008 |
+| `m` | Histórico de movimentações (`h` é navegação no modo normal) | REQ-008 |
 | `c` | Configuração | REQ-007 |
 | `q` | Sair | — |
 
@@ -33,7 +33,7 @@ Inspirados no vim e no lazygit. O modo atual aparece na base da tela (`NORMAL` /
 | | `i` | começa a digitar no campo focado |
 | | `Enter` | confirma o formulário |
 | | `Esc` | volta ao painel |
-| | `p` `e` `s` `t` | abre outra tela (sem empilhar telas) |
+| | `p` `e` `s` `t` `v` `m` `c` | abre outra tela (sem empilhar telas) |
 | Inserção | texto | vai para o campo; `Tab` / `Shift+Tab` trocam de campo sem sair do modo |
 | | `Enter` | confirma o formulário e volta ao modo normal |
 | | `Esc` | volta ao modo normal |
@@ -47,6 +47,11 @@ No modo normal, as letras nunca alteram o conteúdo dos campos. `q` sai do progr
 
 ### Saída
 O motivo é digitado pela inicial ou pelo nome: `v` venda, `p` perda, `d` descarte por vencimento. Em branco, vale venda, a saída mais frequente. A mensagem de sucesso lista quanto saiu de cada lote e o saldo restante.
+
+### Validades e painel
+- Validades (`v`): lotes com saldo vencidos ou perto de vencer, do mais urgente ao menos urgente. A situação aparece em texto ("vencido há 2 dias", "vence hoje", "vence em 5 dias") e em cor.
+- Configuração (`c`): antecedência do alerta em dias (0 a 365).
+- Painel inicial: total de produtos, unidades em estoque, lotes vencidos e lotes perto de vencer, atualizados sempre que a tela volta ao painel.
 
 ## Estados
 
