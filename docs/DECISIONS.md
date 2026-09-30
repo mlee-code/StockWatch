@@ -612,3 +612,60 @@ Pedido para retirar de linha um produto com histórico, o que levaria à exclus�
 
 ## Substituída por
 - Nenhuma.
+
+# DECISION-011 — Licença MIT
+
+## Estado
+- [ ] Proposta
+- [x] Aceita
+- [ ] Rejeitada
+- [ ] Substituída
+- [ ] Obsoleta
+
+## Data
+2026-09-30
+
+## Responsável
+M Lee
+
+## Contexto
+O repositório é público e faz parte do portfólio; sem licença, legalmente valem todos os direitos reservados.
+
+## Problema
+Visitantes e avaliadores não saberiam se podem usar, estudar ou adaptar o código.
+
+## Decisão
+Licenciar o StockWatch sob a MIT (`LICENSE`), declarada no `pyproject.toml` (PEP 639) e no README.
+
+## Motivação
+É permissiva, curta, amplamente reconhecida e adequada a projetos de portfólio.
+
+## Alternativas consideradas
+### Alternativa A
+- Descrição: GPL-3.0.
+- Vantagens: obriga derivados a manter o código aberto.
+- Desvantagens: restringe o reuso em projetos proprietários.
+- Motivo da rejeição: o objetivo é divulgação e reuso livre.
+
+## Consequências
+### Positivas
+- Uso, estudo e adaptação liberados, com atribuição.
+### Negativas
+- Derivados podem fechar o código.
+### Riscos
+- Nenhum relevante.
+
+## Documentos afetados
+- `README.md`, `pyproject.toml`.
+
+## Código ou módulos afetados
+- Nenhum.
+
+## Critério para revisar esta decisão
+Uso comercial que exija outra licença.
+
+## Substitui
+- Nenhuma.
+
+## Substituída por
+- Nenhuma.
