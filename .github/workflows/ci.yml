@@ -3,6 +3,7 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   qualidade:
@@ -23,3 +24,22 @@ jobs:
         run: mypy
       - name: Testes
         run: pytest --cov=stockwatch --cov-report=term-missing
+
+  volume:
+    # Lento (1 milhão de movimentações): só sob demanda, pela aba Actions.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar
+        run: pip install -e '.[dev]'
+      - name: Volume e benchmarks
+        run: pytest -m volume tests/volume tests/desempenho --benchmark-json=desempenho.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desempenho
+          path: desempenho.json
