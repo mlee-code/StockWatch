@@ -7,8 +7,14 @@ nunca outra exceção (SUITE-FUZZ).
 import re
 from datetime import date
 
-from stockwatch.dominio.erros import DataInvalida, MotivoInvalido, QuantidadeInvalida
+from stockwatch.dominio.erros import (
+    DataInvalida,
+    DiasAlertaInvalido,
+    MotivoInvalido,
+    QuantidadeInvalida,
+)
 from stockwatch.dominio.estoque import MotivoSaida
+from stockwatch.dominio.validade import DIAS_ALERTA_MAXIMO
 
 _INTEIRO = re.compile(r"[0-9]+")
 _ISO = re.compile(r"(\d{4})-(\d{2})-(\d{2})", re.ASCII)
@@ -58,3 +64,13 @@ def ler_motivo(texto: str) -> MotivoSaida:
         raise MotivoInvalido(
             "Motivo inválido: use venda (v), perda (p) ou descarte por vencimento (d)."
         ) from None
+
+
+def ler_dias_alerta(texto: str) -> int:
+    """Antecedência do alerta: inteiro de 0 a 365 dias (REQ-007 CA-1)."""
+    limpo = texto.strip()
+    if not _INTEIRO.fullmatch(limpo) or int(limpo) > DIAS_ALERTA_MAXIMO:
+        raise DiasAlertaInvalido(
+            f"A antecedência deve ser um número inteiro de 0 a {DIAS_ALERTA_MAXIMO} dias."
+        )
+    return int(limpo)

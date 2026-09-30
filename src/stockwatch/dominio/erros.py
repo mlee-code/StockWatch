@@ -43,3 +43,7 @@ class MotivoInvalido(ErroDominio):
 
 class ProdutoComMovimentacoes(ErroDominio):
     """Produto com histórico não pode ser excluído (DECISION-010)."""
+
+
+class DiasAlertaInvalido(ErroDominio):
+    """Antecedência do alerta fora de 0 a 365 dias."""
