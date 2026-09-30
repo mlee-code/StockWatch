@@ -46,6 +46,8 @@ O operador registra uma saída com produto, quantidade e motivo.
 ### REQ-008 — Consultar histórico
 - CA-1: lista as movimentações da mais recente para a mais antiga, com data e hora, tipo, motivo, produto e quantidade.
 - CA-2: o histórico é somente leitura.
+- CA-3: mostra as 500 movimentações mais recentes. O limite existe porque, com o volume de NFR-003 (1 milhão de movimentações), carregar tudo tornaria a tela lenta.
+- CA-4: com um produto em foco (REQ-012), mostra só as movimentações dele.
 
 ### REQ-009 — Painel inicial
 - CA-1: ao abrir, a TUI mostra o total de produtos, o total de unidades, a quantidade de lotes vencidos e a de lotes perto de vencer.
