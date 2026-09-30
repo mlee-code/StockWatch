@@ -282,11 +282,11 @@ class RepositorioMovimentacoesSqlite:
                    (SELECT SUM(quantidade) FROM movimentacao_lote WHERE movimentacao_id = m.id)
             FROM movimentacao m
             JOIN produto p ON p.id = m.produto_id
-            WHERE ?1 IS NULL OR m.produto_id = ?1
+            WHERE :produto IS NULL OR m.produto_id = :produto
             ORDER BY m.ocorrida_em DESC, m.id DESC
-            LIMIT ?2
+            LIMIT :limite
             """,
-            (produto_id, limite),
+            {"produto": produto_id, "limite": limite},
         ).fetchall()
         return [
             ItemHistorico(
