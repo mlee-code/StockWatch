@@ -126,5 +126,5 @@ async def test_resumo_ocupa_a_largura_e_centraliza_o_texto(app: StockWatchApp) -
     """TEST-TUI-078: o quadro do painel vai de ponta a ponta, com o texto centralizado."""
     async with app.run_test(size=(100, 30)):
         resumo = app.screen.query_one("#resumo")
-        assert resumo.size.width >= 100 - 4
+        assert resumo.outer_size.width >= 100 - 4
         assert resumo.styles.text_align == "center"
