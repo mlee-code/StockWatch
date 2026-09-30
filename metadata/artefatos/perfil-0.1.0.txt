@@ -1,0 +1,40 @@
+StockWatch 0.1.0: cProfile de painel() + validades() com 10 mil produtos, 1 milhão de movimentações (tests/volume/gerador.py)
+
+         4547 function calls in 0.585 seconds
+
+   Ordered by: cumulative time
+   List reduced from 31 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10    0.582    0.058    0.582    0.058 {method 'execute' of 'sqlite3.Connection' objects}
+        1    0.000    0.000    0.352    0.352 /home/MLee/projects/StockWatch/src/stockwatch/aplicacao/servico.py:195(painel)
+        1    0.000    0.000    0.233    0.233 /home/MLee/projects/StockWatch/src/stockwatch/aplicacao/servico.py:172(validades)
+        1    0.000    0.000    0.232    0.232 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:223(com_saldo_vencendo_ate)
+        1    0.000    0.000    0.205    0.205 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:259(contar_vencendo_ate)
+        1    0.000    0.000    0.147    0.147 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:281(total_de_unidades)
+        1    0.000    0.000    0.000    0.000 {method 'fetchall' of 'sqlite3.Cursor' objects}
+      500    0.000    0.000    0.000    0.000 <string>:2(__init__)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.sorted}
+      500    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/aplicacao/servico.py:193(<lambda>)
+      500    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:38(_data_ou_nada)
+        2    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:364(dias_alerta)
+      500    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/dominio/validade.py:21(classificar)
+      500    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/dominio/validade.py:16(e_alerta)
+        1    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:139(contar)
+      500    0.000    0.000    0.000    0.000 {method 'casefold' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:83(__exit__)
+      500    0.000    0.000    0.000    0.000 {built-in method fromisoformat}
+      500    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:34(_nome_ou_nada)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+      500    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/dominio/estoque.py:57(__post_init__)
+        2    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:79(__enter__)
+        5    0.000    0.000    0.000    0.000 {method 'fetchone' of 'sqlite3.Cursor' objects}
+        3    0.000    0.000    0.000    0.000 {method 'isoformat' of 'datetime.date' objects}
+        2    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:64(nova_unidade)
+        2    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:72(__init__)
+        2    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/scripts/registrar_desempenho.py:113(<lambda>)
+        2    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:97(__init__)
+        2    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:183(__init__)
+        2    0.000    0.000    0.000    0.000 /home/MLee/projects/StockWatch/src/stockwatch/persistencia/sqlite.py:311(__init__)
+
+
