@@ -15,6 +15,6 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-30.
 - V010-07 — Histórico de movimentações.
 
 ## Em andamento
-- V010-08 — Fuzzing, volume, profiling, README e release, branch `chore/release-0.1.0`.
+- V010-08 — Fuzzing, volume, profiling, README e release, branch `chore/release-0.1.0`: implementada, em validação.
 
 ## Próximas

@@ -13,11 +13,11 @@ Transformar `REQUIREMENTS.md` em verificações executáveis, construídas por T
 ```sh
 scripts/verificar.sh                # portão local: lint, formatação, tipos e testes
 .venv/bin/pytest                    # padrão: tudo menos volume
-.venv/bin/pytest -m volume          # volume (lento)
-.venv/bin/pytest tests/desempenho --benchmark-only
+.venv/bin/pytest -m volume tests/volume tests/desempenho --benchmark-json=desempenho.json --benchmark-save-data
+.venv/bin/python scripts/registrar_desempenho.py desempenho.json --versao X.Y.Z   # métricas no metadata
 .venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/mypy
 ```
-O CI (`.github/workflows/ci.yml`) roda o conjunto padrão a cada push.
+O CI (`.github/workflows/ci.yml`) roda o conjunto padrão a cada push. Volume e benchmarks rodam sob demanda (`workflow_dispatch`), porque são lentos.
 
 ## Tipos de teste e critérios de aceitação
 
@@ -57,7 +57,7 @@ O CI (`.github/workflows/ci.yml`) roda o conjunto padrão a cada push.
 - **Objeto:** banco com 10 mil produtos e 1 milhão de movimentações.
 - **Critério:** as metas de NFR-003 atendidas, e o invariante de saldo verificado por consulta sobre o banco inteiro.
 
-### SUITE-DES — Desempenho e profiling (`tests/desempenho/`)
+### SUITE-DES — Desempenho e profiling (`tests/desempenho/`, marcador `volume`)
 - **Objeto:** operações de NFR-003 com pytest-benchmark; cProfile e tracemalloc nos mesmos cenários.
 - **Critério:** as métricas são registradas em `metadata` com o ambiente e a baseline (DECISION-003). Uma regressão acima de 20% no p95 contra a baseline no mesmo ambiente reprova o portão.
 
@@ -106,6 +106,11 @@ Cada arquivo de teste identifica seus casos como `TEST-<SUITE>-NNN` na docstring
 | TEST-UNIT-120 a 123 | histórico no serviço (REQ-008) | `tests/unit/test_servico_historico.py` |
 | TEST-INT-080, 081 | histórico no SQLite | `tests/integracao/test_historico_sqlite.py` |
 | TEST-TUI-090 a 093 | tela de histórico | `tests/tui/test_historico.py` |
+| TEST-UNIT-115 | limite de alertas listados (REQ-006 CA-5) | `tests/unit/test_servico_validades.py` |
+| TEST-FUZZ-001 | 1.000 textos arbitrários por leitor | `tests/fuzzing/test_leitores.py` |
+| TEST-FUZZ-002 | 200 sequências de até 50 operações sobre SQLite real | `tests/fuzzing/test_maquina_de_estados.py` |
+| TEST-VOL-001 a 006 | volume, invariante de saldo, metas de NFR-003 e uso de índice | `tests/volume/test_volume.py` |
+| TEST-DES-001 a 003 | benchmarks para o metadata (DECISION-003) | `tests/desempenho/test_benchmarks.py` |
 | TEST-ARQ-001, 002 | camadas e dependências | `tests/arquitetura/test_dependencias.py` |
 
 ## Portões por parte
