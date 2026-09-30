@@ -1,6 +1,6 @@
 # PROJECT_STATUS.md
 
-Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-29.
+Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-30.
 
 ## Concluídas
 - V010-01 — Plano da versão (proposta, roadmap, decisões).
@@ -10,9 +10,11 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-29.
 - V010-09 — Modos normal e inserção.
 - V010-10 — Edição de produto e atalhos com contexto.
 - V010-05 — Saída FEFO com motivo.
+- V010-11 — Exclusão de produto.
 
 ## Em andamento
-- V010-11 — Exclusão de produto, branch `feat/excluir-produto`.
+- V010-06 — Validades, alertas, configuração de N e painel, branch `feat/validades-alertas`.
 
 ## Próximas
-- V010-06 — Validades, alertas, configuração de N e painel.
+- V010-07 — Histórico de movimentações.
+- V010-08 — Fuzzing, volume, profiling, README e release.

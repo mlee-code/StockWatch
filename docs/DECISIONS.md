@@ -546,3 +546,69 @@ Pedido de exclusão de produtos ou de edição de movimentações.
 
 ## Substituída por
 - Nenhuma.
+
+# DECISION-010 — Exclusão de produto somente sem movimentações
+
+## Estado
+- [ ] Proposta
+- [x] Aceita
+- [ ] Rejeitada
+- [ ] Substituída
+- [ ] Obsoleta
+
+## Data
+2026-09-29
+
+## Responsável
+M Lee (regra proposta pelo agente, a validar no review da versão)
+
+## Contexto
+FR-005 pede a exclusão de produtos. O estoque e o histórico são derivados das movimentações de cada produto.
+
+## Problema
+Excluir um produto com movimentações apagaria lotes e histórico, ou deixaria linhas órfãs, e tornaria o estoque passado irreconstituível.
+
+## Decisão
+- Um produto só pode ser excluído se nunca teve movimentação: por exemplo, um cadastro feito por engano.
+- Com movimentações, a exclusão é rejeitada, e a mensagem explica que o histórico seria perdido.
+- A exclusão pede confirmação explícita na TUI.
+- A categoria do produto excluído permanece cadastrada.
+
+## Motivação
+Preserva o invariante "o estoque é derivado do histórico" e ainda permite desfazer um cadastro errado.
+
+## Alternativas consideradas
+### Alternativa A
+- Descrição: exclusão lógica (produto "inativo", oculto das listas).
+- Vantagens: permite retirar de linha um produto com histórico.
+- Desvantagens: estado e filtros a mais em todas as consultas.
+- Motivo da rejeição: escopo da v0.1.0; candidata a um ciclo futuro.
+
+### Alternativa B
+- Descrição: exclusão em cascata (produto, lotes e movimentações).
+- Vantagens: simples.
+- Desvantagens: destrói o histórico sem possibilidade de recuperação.
+- Motivo da rejeição: perda de dados.
+
+## Consequências
+### Positivas
+- Cadastros errados podem ser removidos sem risco para o histórico.
+### Negativas
+- Um produto com histórico continua visível mesmo sem uso.
+### Riscos
+- O operador não entender por que não consegue excluir. Mitigação: a mensagem explica o motivo.
+
+## Documentos afetados
+- `REQUIREMENTS.md` (REQ-013), `UX_UI.md`, `ROADMAP.md` (V010-11).
+
+## Código ou módulos afetados
+- `aplicacao`, `persistencia`, `tui`.
+
+## Critério para revisar esta decisão
+Pedido para retirar de linha um produto com histórico, o que levaria à exclusão lógica.
+
+## Substitui
+- A exclusão de produtos em PROP-001, "Não incluído".
+
+## Substituída por
+- Nenhuma.

@@ -67,6 +67,11 @@ O operador corrige o nome e a categoria de um produto cadastrado (DECISION-009).
 - CA-1: com um produto destacado numa tabela em foco (produtos ou estoque), a tecla de entrada abre o formulário com o produto preenchido e o foco na quantidade.
 - CA-2: sem tabela em foco, o formulário abre vazio.
 
+### REQ-013 — Excluir produto
+- CA-1: um produto sem movimentações pode ser excluído, após confirmação explícita.
+- CA-2: um produto com movimentações não pode ser excluído, e a mensagem explica que o histórico seria perdido (DECISION-010).
+- CA-3: cancelar a confirmação não altera nada.
+
 ## Requisitos não funcionais
 
 ### NFR-001 — Operação por teclado

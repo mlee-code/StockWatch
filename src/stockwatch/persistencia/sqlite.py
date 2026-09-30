@@ -128,6 +128,17 @@ class RepositorioProdutosSqlite:
             (produto.nome.valor, produto.nome.chave, categoria_id, produto.id),
         )
 
+    def possui_movimentacoes(self, produto_id: int) -> bool:
+        linha = self._conexao.execute(
+            "SELECT EXISTS (SELECT 1 FROM movimentacao WHERE produto_id = ?)", (produto_id,)
+        ).fetchone()
+        return bool(linha[0])
+
+    def remover(self, produto_id: int) -> None:
+        # Só produtos sem movimentações chegam aqui (DECISION-010); sem lotes nem linhas
+        # dependentes, o id liberado pode ser reutilizado pelo SQLite sem ambiguidade.
+        self._conexao.execute("DELETE FROM produto WHERE id = ?", (produto_id,))
+
     @staticmethod
     def _produto(linha: tuple[int, str, str | None] | None) -> Produto | None:
         if linha is None:
