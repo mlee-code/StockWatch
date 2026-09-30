@@ -1,6 +1,6 @@
 """Formatação de valores para exibição."""
 
-from datetime import date
+from datetime import date, datetime
 
 
 def data_br(valor: date) -> str:
@@ -19,3 +19,8 @@ def descrever_prazo(dias: int) -> str:
     if dias == 0:
         return "vence hoje"
     return f"vence em {dias} dia{'s' if dias > 1 else ''}"
+
+
+def instante_local(valor: datetime) -> str:
+    """Instante gravado em UTC, exibido no fuso da máquina."""
+    return valor.astimezone().strftime("%d/%m/%Y %H:%M")

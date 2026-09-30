@@ -11,6 +11,7 @@ from stockwatch.tui.modal import TelaModal
 from stockwatch.tui.telas.configuracao import TelaConfiguracao
 from stockwatch.tui.telas.entrada import TelaEntrada
 from stockwatch.tui.telas.estoque import TelaEstoque
+from stockwatch.tui.telas.historico import TelaHistorico
 from stockwatch.tui.telas.painel import TelaPainel
 from stockwatch.tui.telas.produtos import TelaProdutos
 from stockwatch.tui.telas.saida import TelaSaida
@@ -28,6 +29,7 @@ class StockWatchApp(App[None]):
         Binding("s", "saida", "Saída"),
         Binding("t", "estoque", "Estoque"),
         Binding("v", "validades", "Validades"),
+        Binding("m", "historico", "Histórico"),
         Binding("c", "configuracao", "Configuração"),
         Binding("q", "quit", "Sair"),
     ]
@@ -76,6 +78,10 @@ class StockWatchApp(App[None]):
 
     def action_validades(self) -> None:
         self._abrir(TelaValidades(self.servico))
+
+    def action_historico(self) -> None:
+        """REQ-008: com produto em foco, só as movimentações dele (CA-4)."""
+        self._abrir(TelaHistorico(self.servico, self._produto_em_foco()))
 
     def action_configuracao(self) -> None:
         self._abrir(TelaConfiguracao(self.servico))

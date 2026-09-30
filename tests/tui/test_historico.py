@@ -73,7 +73,7 @@ async def test_historico_do_produto_em_foco(
     async with app.run_test() as piloto:
         await piloto.press("p", "l", "l", "j", "m")
         assert [linha[3] for linha in _linhas(app)] == ["Leite", "Leite"]
-        assert "Leite" in app.screen.sub_title
+        assert "Leite" in str(app.screen.sub_title)
 
 
 async def test_esc_volta_ao_painel(app: StockWatchApp) -> None:

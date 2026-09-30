@@ -9,7 +9,7 @@ from stockwatch.aplicacao.servico import ServicoEstoque
 
 ATALHOS = (
     "p produtos  ·  e entrada  ·  s saída  ·  t estoque  ·  "
-    "v validades  ·  c configuração  ·  q sair"
+    "v validades  ·  m histórico  ·  c configuração  ·  q sair"
 )
 
 
