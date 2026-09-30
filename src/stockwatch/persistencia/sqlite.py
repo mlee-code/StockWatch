@@ -6,8 +6,14 @@ from pathlib import Path
 from types import TracebackType
 from typing import Literal, Self
 
-from stockwatch.aplicacao.dtos import ItemEstoque, ResumoProduto
-from stockwatch.dominio.estoque import Lote, LoteComSaldo, Movimentacao
+from stockwatch.aplicacao.dtos import ItemEstoque, ItemHistorico, ResumoProduto
+from stockwatch.dominio.estoque import (
+    Lote,
+    LoteComSaldo,
+    MotivoSaida,
+    Movimentacao,
+    TipoMovimentacao,
+)
 from stockwatch.dominio.produto import Produto
 from stockwatch.dominio.validade import DIAS_ALERTA_PADRAO
 from stockwatch.dominio.valores import NomeValido
@@ -267,6 +273,32 @@ class RepositorioMovimentacoesSqlite:
             [(cursor.lastrowid, c.lote_id, c.quantidade) for c in movimentacao.linhas],
         )
         return cursor.lastrowid
+
+    def recentes(self, limite: int, produto_id: int | None = None) -> list[ItemHistorico]:
+        # O índice em ocorrida_em atende ao ORDER BY ... LIMIT sem ordenar a tabela inteira.
+        linhas = self._conexao.execute(
+            """
+            SELECT m.id, m.ocorrida_em, m.tipo, m.motivo, p.nome,
+                   (SELECT SUM(quantidade) FROM movimentacao_lote WHERE movimentacao_id = m.id)
+            FROM movimentacao m
+            JOIN produto p ON p.id = m.produto_id
+            WHERE ?1 IS NULL OR m.produto_id = ?1
+            ORDER BY m.ocorrida_em DESC, m.id DESC
+            LIMIT ?2
+            """,
+            (produto_id, limite),
+        ).fetchall()
+        return [
+            ItemHistorico(
+                mov_id,
+                datetime.fromisoformat(ocorrida_em),
+                TipoMovimentacao(tipo),
+                MotivoSaida(motivo) if motivo else None,
+                produto,
+                quantidade,
+            )
+            for mov_id, ocorrida_em, tipo, motivo, produto, quantidade in linhas
+        ]
 
 
 class RepositorioConfiguracaoSqlite:
