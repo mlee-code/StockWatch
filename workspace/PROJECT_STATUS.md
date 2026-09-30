@@ -12,9 +12,9 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-30.
 - V010-05 — Saída FEFO com motivo.
 - V010-11 — Exclusão de produto.
 - V010-06 — Validades, alertas, configuração e painel.
+- V010-07 — Histórico de movimentações.
 
 ## Em andamento
-- V010-07 — Histórico de movimentações, branch `feat/historico`: implementada, em validação.
+- V010-08 — Fuzzing, volume, profiling, README e release, branch `chore/release-0.1.0`.
 
 ## Próximas
-- V010-08 — Fuzzing, volume, profiling, README e release.
