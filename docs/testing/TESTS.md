@@ -11,6 +11,7 @@ Transformar `REQUIREMENTS.md` em verificações executáveis, construídas por T
 
 ## Como executar
 ```sh
+scripts/verificar.sh                # portão local: lint, formatação, tipos e testes
 .venv/bin/pytest                    # padrão: tudo menos volume
 .venv/bin/pytest -m volume          # volume (lento)
 .venv/bin/pytest tests/desempenho --benchmark-only
@@ -101,6 +102,10 @@ Cada arquivo de teste identifica seus casos como `TEST-<SUITE>-NNN` na docstring
 | TEST-UNIT-110 a 114 | validades, antecedência e painel no serviço | `tests/unit/test_servico_validades.py` |
 | TEST-INT-070, 071 | configuração e validades no SQLite | `tests/integracao/test_validades_sqlite.py` |
 | TEST-TUI-070 a 077 | validades, configuração e painel | `tests/tui/test_validades_painel.py` |
+| TEST-TUI-078 | quadro do painel na largura toda, texto centralizado | `tests/tui/test_validades_painel.py` |
+| TEST-UNIT-120 a 123 | histórico no serviço (REQ-008) | `tests/unit/test_servico_historico.py` |
+| TEST-INT-080, 081 | histórico no SQLite | `tests/integracao/test_historico_sqlite.py` |
+| TEST-TUI-090 a 093 | tela de histórico | `tests/tui/test_historico.py` |
 | TEST-ARQ-001, 002 | camadas e dependências | `tests/arquitetura/test_dependencias.py` |
 
 ## Portões por parte

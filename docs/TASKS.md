@@ -44,3 +44,9 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 - [x] TASK-060 — `classificar`, `Situacao`, `ler_dias_alerta`; `vencido` derivado de `classificar`. Fonte: REQ-006, 007, H5. Testes: TEST-UNIT-100 a 104, TEST-PROP-005 a 007.
 - [x] TASK-061 — Serviço e SQLite: `validades`, `dias_alerta`, `configurar_dias_alerta`, `painel`. Fonte: REQ-006, 007, 009. Testes: TEST-UNIT-110 a 114, TEST-INT-070, 071.
 - [x] TASK-062 — TUI: telas de validades e configuração, e painel inicial. Fonte: REQ-006, 007, 009, UX_UI. Testes: TEST-TUI-070 a 077.
+
+## V010-07 — Histórico de movimentações
+- [x] TASK-070 — Serviço e SQLite: `historico` com limite e filtro por produto. Fonte: REQ-008. Testes: TEST-UNIT-120 a 123, TEST-INT-080, 081.
+- [x] TASK-071 — TUI: tela de histórico (`m`) em hora local. Fonte: REQ-008, UX_UI. Testes: TEST-TUI-090 a 093.
+- [x] TASK-072 — Painel: quadro na largura toda e texto centralizado (pedido do responsável). Testes: TEST-TUI-078.
+- [x] TASK-073 — `scripts/verificar.sh`: portão local igual ao CI. Fonte: ENGINEERING_PRACTICES.

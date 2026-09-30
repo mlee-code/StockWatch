@@ -51,6 +51,7 @@ O motivo é digitado pela inicial ou pelo nome: `v` venda, `p` perda, `d` descar
 ### Validades e painel
 - Validades (`v`): lotes com saldo vencidos ou perto de vencer, do mais urgente ao menos urgente. A situação aparece em texto ("vencido há 2 dias", "vence hoje", "vence em 5 dias") e em cor.
 - Configuração (`c`): antecedência do alerta em dias (0 a 365).
+- Histórico (`m`): movimentações da mais recente para a mais antiga, com data e hora locais, tipo, motivo, produto e quantidade. Com um produto em foco, mostra só as dele.
 - Painel inicial: total de produtos, unidades em estoque, lotes vencidos e lotes perto de vencer, atualizados sempre que a tela volta ao painel.
 
 ## Estados

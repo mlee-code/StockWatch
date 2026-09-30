@@ -6,6 +6,7 @@ from datetime import UTC, date, datetime
 from stockwatch.aplicacao.dtos import (
     AlertaValidade,
     ItemEstoque,
+    ItemHistorico,
     Painel,
     ResumoEntrada,
     ResumoProduto,
@@ -146,6 +147,11 @@ class ServicoEstoque:
         """REQ-005 CA-2."""
         with self._nova_unidade() as uow:
             return [SaldoLote.de(item) for item in uow.lotes.com_saldo(produto_id)]
+
+    def historico(self, limite: int = 500, produto_id: int | None = None) -> list[ItemHistorico]:
+        """REQ-008: somente leitura; limitado às mais recentes (CA-3)."""
+        with self._nova_unidade() as uow:
+            return uow.movimentacoes.recentes(limite, produto_id)
 
     def dias_alerta(self) -> int:
         """REQ-007."""

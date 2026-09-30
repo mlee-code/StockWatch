@@ -21,6 +21,7 @@ Python 3.12, Textual e SQLite; um monolito local de usuário único (EXEC-001). 
 - **Erros:** regras violadas DEVEM lançar subclasses de `ErroDominio`. A TUI DEVE mostrá-las como mensagem, sem traceback.
 - **Concorrência:** não há; uso único (CON-003).
 - **Automação:**
+  - `scripts/verificar.sh` roda lint, formatação, tipos e testes, parando no primeiro erro. É o portão local antes de todo commit `feat:`/`refactor:`/`fix:`. Não é um hook de pré-commit, porque o commit `test:` do TDD registra de propósito um teste vermelho;
   - `ruff check`, `ruff format --check` e `mypy` estrito DEVEM passar antes de cada commit;
   - o CI repete essas verificações a cada push.
 - **Commits:** [Conventional Commits](https://www.conventionalcommits.org/pt-br/v1.0.0/), com descrição em português. O TDD aparece no histórico: `test:` (Red) → `feat:` (Green) → `refactor:`.

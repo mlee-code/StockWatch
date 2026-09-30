@@ -5,7 +5,7 @@ from datetime import date
 from types import TracebackType
 from typing import Self
 
-from stockwatch.aplicacao.dtos import ItemEstoque, ResumoProduto
+from stockwatch.aplicacao.dtos import ItemEstoque, ItemHistorico, ResumoProduto
 from stockwatch.dominio.estoque import (
     Lote,
     LoteComSaldo,
@@ -144,6 +144,26 @@ class RepositorioMovimentacoesEmMemoria:
     def registrar(self, movimentacao: Movimentacao) -> int:
         self._uow.estado.movimentacoes.append(movimentacao)
         return len(self._uow.estado.movimentacoes)
+
+    def recentes(self, limite: int, produto_id: int | None = None) -> list[ItemHistorico]:
+        estado = self._uow.estado
+        numeradas = [
+            (mov_id, m)
+            for mov_id, m in enumerate(estado.movimentacoes, start=1)
+            if produto_id is None or m.produto_id == produto_id
+        ]
+        numeradas.sort(key=lambda par: (par[1].ocorrida_em, par[0]), reverse=True)
+        return [
+            ItemHistorico(
+                mov_id,
+                m.ocorrida_em,
+                m.tipo,
+                m.motivo,
+                estado.produtos[m.produto_id].nome.valor,
+                m.quantidade,
+            )
+            for mov_id, m in numeradas[:limite]
+        ]
 
 
 class UnidadeDeTrabalhoEmMemoria:
