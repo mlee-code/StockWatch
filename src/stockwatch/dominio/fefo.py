@@ -9,11 +9,13 @@ from datetime import date
 
 from stockwatch.dominio.erros import QuantidadeInvalida, SaldoInsuficiente
 from stockwatch.dominio.estoque import Consumo, Lote, LoteComSaldo, MotivoSaida, ordem_fefo
+from stockwatch.dominio.validade import Situacao, classificar
 
 
 def vencido(lote: Lote, hoje: date) -> bool:
     """H5: vence ao fim do dia da validade; lote sem validade nunca vence."""
-    return lote.validade is not None and lote.validade < hoje
+    # A antecedência não importa para "vencido"; a definição fica só em classificar.
+    return classificar(lote.validade, hoje, dias_alerta=0) is Situacao.VENCIDO
 
 
 def elegivel(lote: Lote, motivo: MotivoSaida, hoje: date) -> bool:
