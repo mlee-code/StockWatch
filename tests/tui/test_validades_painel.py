@@ -120,3 +120,11 @@ async def test_painel_mostra_todos_os_atalhos(app: StockWatchApp) -> None:
         atalhos = _texto(app, "#atalhos")
         for tecla in ["p", "e", "s", "t", "v", "c", "q"]:
             assert f"{tecla} " in atalhos
+
+
+async def test_resumo_ocupa_a_largura_e_centraliza_o_texto(app: StockWatchApp) -> None:
+    """TEST-TUI-078: o quadro do painel vai de ponta a ponta, com o texto centralizado."""
+    async with app.run_test(size=(100, 30)):
+        resumo = app.screen.query_one("#resumo")
+        assert resumo.size.width >= 100 - 4
+        assert resumo.styles.text_align == "center"
