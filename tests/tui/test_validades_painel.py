@@ -92,7 +92,7 @@ async def test_configura_antecedencia(app: StockWatchApp, servico: ServicoEstoqu
 async def test_antecedencia_invalida(app: StockWatchApp, servico: ServicoEstoque) -> None:
     """TEST-TUI-074: valor fora da faixa mostra o erro e não grava (REQ-007 CA-1)."""
     async with app.run_test() as piloto:
-        await piloto.press("c", "i", *"00", "enter")
+        await piloto.press("c", "i", *"999", "enter")
         assert "365" in _texto(app, "#mensagem")
     assert servico.dias_alerta() == 30
 
