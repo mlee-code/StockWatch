@@ -220,7 +220,9 @@ class RepositorioLotesSqlite:
             for lote_id, validade, fornecedor, saldo in linhas
         ]
 
-    def com_saldo_vencendo_ate(self, limite: date) -> list[tuple[str, LoteComSaldo]]:
+    def com_saldo_vencendo_ate(
+        self, limite: date, maximo: int | None = None
+    ) -> list[tuple[str, LoteComSaldo]]:
         # Filtra primeiro pela validade (índice idx_lote_fefo) e só então calcula o saldo
         # de cada candidato pelo índice de movimentacao_lote: evita agregar o banco inteiro.
         linhas = self._conexao.execute(
@@ -235,12 +237,13 @@ class RepositorioLotesSqlite:
                 FROM lote l
                 JOIN produto p ON p.id = l.produto_id
                 LEFT JOIN fornecedor f ON f.id = l.fornecedor_id
-                WHERE l.validade IS NOT NULL AND l.validade <= ?
+                WHERE l.validade IS NOT NULL AND l.validade <= :limite
             )
             WHERE saldo > 0
             ORDER BY validade, id
+            LIMIT :maximo
             """,
-            (limite.isoformat(),),
+            {"limite": limite.isoformat(), "maximo": -1 if maximo is None else maximo},
         ).fetchall()
         return [
             (
@@ -252,6 +255,28 @@ class RepositorioLotesSqlite:
             )
             for produto, lote_id, produto_id, validade, fornecedor, saldo in linhas
         ]
+
+    def contar_vencendo_ate(self, hoje: date, limite: date) -> tuple[int, int]:
+        # Espelha H5 em SQL (vencido = validade anterior a hoje) só para contar sem trazer
+        # as linhas; a equivalência com classificar() é verificada pelo fuzzing (painel).
+        linha = self._conexao.execute(
+            """
+            SELECT COALESCE(SUM(validade < :hoje), 0), COALESCE(SUM(validade >= :hoje), 0)
+            FROM (
+                SELECT l.validade,
+                       (SELECT SUM(CASE m.tipo WHEN 'entrada' THEN ml.quantidade
+                                               ELSE -ml.quantidade END)
+                        FROM movimentacao_lote ml
+                        JOIN movimentacao m ON m.id = ml.movimentacao_id
+                        WHERE ml.lote_id = l.id) AS saldo
+                FROM lote l
+                WHERE l.validade IS NOT NULL AND l.validade <= :limite
+            )
+            WHERE saldo > 0
+            """,
+            {"hoje": hoje.isoformat(), "limite": limite.isoformat()},
+        ).fetchone()
+        return int(linha[0]), int(linha[1])
 
     def total_de_unidades(self) -> int:
         linha = self._conexao.execute(

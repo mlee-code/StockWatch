@@ -43,11 +43,18 @@ class RepositorioLotes(Protocol):
         """Produtos com saldo > 0, em ordem alfabética (REQ-005 CA-1)."""
         ...
 
-    def com_saldo_vencendo_ate(self, limite: date) -> list[tuple[str, LoteComSaldo]]:
-        """Lotes com saldo > 0 e validade até `limite`, com o nome do produto.
+    def com_saldo_vencendo_ate(
+        self, limite: date, maximo: int | None = None
+    ) -> list[tuple[str, LoteComSaldo]]:
+        """Lotes com saldo > 0 e validade até `limite`, da validade mais próxima, com o
+        nome do produto; no máximo `maximo` lotes.
 
         Só pré-filtra candidatos a alerta no banco; a classificação continua no domínio.
         """
+        ...
+
+    def contar_vencendo_ate(self, hoje: date, limite: date) -> tuple[int, int]:
+        """(vencidos, perto de vencer) entre os lotes com saldo e validade até `limite`."""
         ...
 
     def total_de_unidades(self) -> int: ...

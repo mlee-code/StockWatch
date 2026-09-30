@@ -14,7 +14,7 @@ from stockwatch.dominio.estoque import (
     ordem_fefo,
 )
 from stockwatch.dominio.produto import Produto
-from stockwatch.dominio.validade import DIAS_ALERTA_PADRAO
+from stockwatch.dominio.validade import DIAS_ALERTA_PADRAO, Situacao, classificar
 from stockwatch.dominio.valores import NomeValido
 
 
@@ -104,14 +104,27 @@ class RepositorioLotesEmMemoria:
         com_saldo = (LoteComSaldo(lote, estado.saldo_do_lote(lote.id)) for lote in lotes)
         return [item for item in com_saldo if item.saldo > 0]
 
-    def com_saldo_vencendo_ate(self, limite: date) -> list[tuple[str, LoteComSaldo]]:
+    def com_saldo_vencendo_ate(
+        self, limite: date, maximo: int | None = None
+    ) -> list[tuple[str, LoteComSaldo]]:
         estado = self._uow.estado
-        return [
-            (estado.produtos[item.lote.produto_id].nome.valor, item)
-            for produto_id in estado.produtos
-            for item in self.com_saldo(produto_id)
-            if item.lote.validade is not None and item.lote.validade <= limite
+        candidatos = sorted(
+            (
+                (estado.produtos[item.lote.produto_id].nome.valor, item)
+                for produto_id in estado.produtos
+                for item in self.com_saldo(produto_id)
+                if item.lote.validade is not None and item.lote.validade <= limite
+            ),
+            key=lambda par: ordem_fefo(par[1].lote),
+        )
+        return candidatos[:maximo]
+
+    def contar_vencendo_ate(self, hoje: date, limite: date) -> tuple[int, int]:
+        situacoes = [
+            classificar(item.lote.validade, hoje, (limite - hoje).days)
+            for _, item in self.com_saldo_vencendo_ate(limite)
         ]
+        return situacoes.count(Situacao.VENCIDO), situacoes.count(Situacao.PERTO)
 
     def total_de_unidades(self) -> int:
         estado = self._uow.estado
