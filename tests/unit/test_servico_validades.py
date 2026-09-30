@@ -69,3 +69,10 @@ def test_painel_resume_estoque_e_alertas(servico: ServicoEstoque) -> None:
         painel.lotes_perto,
         painel.dias_alerta,
     ) == (3, 21, 1, 2, 30)
+
+
+def test_validades_limitadas_aos_mais_urgentes(servico: ServicoEstoque) -> None:
+    """TEST-UNIT-115: a lista respeita o limite; o painel continua contando todos (CA-5)."""
+    assert [a.dias for a in servico.validades(limite=2)] == [-3, 0]
+    painel = servico.painel()
+    assert (painel.lotes_vencidos, painel.lotes_perto) == (1, 2)
