@@ -9,6 +9,7 @@ from typing import Literal, Self
 from stockwatch.aplicacao.dtos import ItemEstoque, ResumoProduto
 from stockwatch.dominio.estoque import Lote, LoteComSaldo, Movimentacao
 from stockwatch.dominio.produto import Produto
+from stockwatch.dominio.validade import DIAS_ALERTA_PADRAO
 from stockwatch.dominio.valores import NomeValido
 from stockwatch.persistencia.migracoes import migrar
 
@@ -67,6 +68,7 @@ class UnidadeDeTrabalhoSqlite:
         self.produtos = RepositorioProdutosSqlite(conexao)
         self.lotes = RepositorioLotesSqlite(conexao)
         self.movimentacoes = RepositorioMovimentacoesSqlite(conexao)
+        self.configuracao = RepositorioConfiguracaoSqlite(conexao)
 
     def __enter__(self) -> Self:
         self._conexao.execute("BEGIN")
@@ -202,6 +204,30 @@ class RepositorioLotesSqlite:
             for lote_id, validade, fornecedor, saldo in linhas
         ]
 
+    def todos_com_saldo(self) -> list[tuple[str, LoteComSaldo]]:
+        linhas = self._conexao.execute(
+            f"""
+            WITH {_SALDO_LOTE}
+            SELECT p.nome, l.id, l.produto_id, l.validade, f.nome, s.saldo
+            FROM saldo_lote s
+            JOIN lote l ON l.id = s.lote_id
+            JOIN produto p ON p.id = l.produto_id
+            LEFT JOIN fornecedor f ON f.id = l.fornecedor_id
+            WHERE s.saldo > 0
+            ORDER BY l.validade IS NULL, l.validade, l.id
+            """
+        ).fetchall()
+        return [
+            (
+                produto,
+                LoteComSaldo(
+                    Lote(lote_id, produto_id, _data_ou_nada(validade), _nome_ou_nada(fornecedor)),
+                    saldo,
+                ),
+            )
+            for produto, lote_id, produto_id, validade, fornecedor, saldo in linhas
+        ]
+
     def resumo_estoque(self) -> list[ItemEstoque]:
         linhas = self._conexao.execute(
             f"""
@@ -241,3 +267,25 @@ class RepositorioMovimentacoesSqlite:
             [(cursor.lastrowid, c.lote_id, c.quantidade) for c in movimentacao.linhas],
         )
         return cursor.lastrowid
+
+
+class RepositorioConfiguracaoSqlite:
+    """Tabela chave-valor `configuracao`; `dias_alerta` nasce com 30 na migração 1."""
+
+    def __init__(self, conexao: sqlite3.Connection) -> None:
+        self._conexao = conexao
+
+    def dias_alerta(self) -> int:
+        linha = self._conexao.execute(
+            "SELECT valor FROM configuracao WHERE chave = 'dias_alerta'"
+        ).fetchone()
+        return int(linha[0]) if linha else DIAS_ALERTA_PADRAO
+
+    def definir_dias_alerta(self, dias: int) -> None:
+        self._conexao.execute(
+            """
+            INSERT INTO configuracao (chave, valor) VALUES ('dias_alerta', ?)
+            ON CONFLICT (chave) DO UPDATE SET valor = excluded.valor
+            """,
+            (str(dias),),
+        )

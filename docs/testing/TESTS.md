@@ -96,6 +96,11 @@ Cada arquivo de teste identifica seus casos como `TEST-<SUITE>-NNN` na docstring
 | TEST-UNIT-090 a 093 | exclusão de produto no serviço (REQ-013) | `tests/unit/test_servico_exclusao.py` |
 | TEST-INT-060, 061 | exclusão de produto no SQLite | `tests/integracao/test_exclusao_sqlite.py` |
 | TEST-TUI-060 a 063 | exclusão com confirmação | `tests/tui/test_exclusao.py` |
+| TEST-UNIT-100 a 104 | classificação de validade e leitura da antecedência (REQ-006, 007) | `tests/unit/test_validade.py` |
+| TEST-PROP-005 a 007 | propriedades da classificação (H5, monotonicidade) | `tests/propriedades/test_validade_propriedades.py` |
+| TEST-UNIT-110 a 114 | validades, antecedência e painel no serviço | `tests/unit/test_servico_validades.py` |
+| TEST-INT-070, 071 | configuração e validades no SQLite | `tests/integracao/test_validades_sqlite.py` |
+| TEST-TUI-070 a 077 | validades, configuração e painel | `tests/tui/test_validades_painel.py` |
 | TEST-ARQ-001, 002 | camadas e dependências | `tests/arquitetura/test_dependencias.py` |
 
 ## Portões por parte

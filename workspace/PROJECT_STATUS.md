@@ -11,10 +11,10 @@ Derivado de `docs/ROADMAP.md` e `docs/TASKS.md`. Atualizado em 2026-09-30.
 - V010-10 — Edição de produto e atalhos com contexto.
 - V010-05 — Saída FEFO com motivo.
 - V010-11 — Exclusão de produto.
+- V010-06 — Validades, alertas, configuração e painel.
 
 ## Em andamento
-- V010-06 — Validades, alertas, configuração de N e painel, branch `feat/validades-alertas`.
+- V010-07 — Histórico de movimentações, branch `feat/historico`.
 
 ## Próximas
-- V010-07 — Histórico de movimentações.
 - V010-08 — Fuzzing, volume, profiling, README e release.

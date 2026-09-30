@@ -39,3 +39,8 @@ Tarefas executáveis derivadas de `ROADMAP.md`. Cada tarefa aponta a origem, as 
 ## V010-11 — Exclusão de produto
 - [x] TASK-110 — Serviço e SQLite: `excluir_produto`, `possui_movimentacoes`, `remover`. Fonte: REQ-013, DECISION-010. Testes: TEST-UNIT-090 a 093, TEST-INT-060, 061.
 - [x] TASK-111 — TUI: `d` com confirmação. Fonte: REQ-013, UX_UI. Testes: TEST-TUI-060 a 063.
+
+## V010-06 — Validades, alertas, configuração de N e painel
+- [x] TASK-060 — `classificar`, `Situacao`, `ler_dias_alerta`; `vencido` derivado de `classificar`. Fonte: REQ-006, 007, H5. Testes: TEST-UNIT-100 a 104, TEST-PROP-005 a 007.
+- [x] TASK-061 — Serviço e SQLite: `validades`, `dias_alerta`, `configurar_dias_alerta`, `painel`. Fonte: REQ-006, 007, 009. Testes: TEST-UNIT-110 a 114, TEST-INT-070, 071.
+- [x] TASK-062 — TUI: telas de validades e configuração, e painel inicial. Fonte: REQ-006, 007, 009, UX_UI. Testes: TEST-TUI-070 a 077.
