@@ -22,3 +22,9 @@ htmlcov/
 .idea/
 .vscode/
 .DS_Store
+
+# Arquivos pessoais de trabalho: instruções para agentes de IA, contexto e
+# conversas do responsável. Ficam só na máquina local, nunca no GitHub.
+AGENTS.md
+CLAUDE.md
+workspace/
