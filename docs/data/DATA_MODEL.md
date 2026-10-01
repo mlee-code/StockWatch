@@ -6,7 +6,7 @@
 | Produto | dados funcionais do estoque | `$XDG_DATA_HOME/stockwatch/stockwatch.db` (REQ-010) |
 | `metadata` | evidências de engenharia, separadas do produto | `metadata/metadata.sqlite3` (DECISION-002) |
 
-Este documento trata só do banco do produto. A fonte canônica do esquema físico é `src/stockwatch/persistencia/migracoes.py`. O DBML em `workspace/database_design/` é uma projeção.
+Este documento trata só do banco do produto. A fonte canônica do esquema físico é `src/stockwatch/persistencia/migracoes.py`. O DBML em `docs/data/stockwatch.dbml` é uma projeção.
 
 ## Modelo conceitual
 - Um **produto** pode ter uma **categoria**.
