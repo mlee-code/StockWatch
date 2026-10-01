@@ -669,3 +669,63 @@ Uso comercial que exija outra licença.
 
 ## Substituída por
 - Nenhuma.
+
+# DECISION-012 — Visibilidade dos artefatos no repositório
+
+## Estado
+- [ ] Proposta
+- [x] Aceita
+- [ ] Rejeitada
+- [ ] Substituída
+- [ ] Obsoleta
+
+## Data
+2026-10-01
+
+## Responsável
+M Lee
+
+## Contexto
+O repositório é público. As instruções para agentes e as entradas de trabalho do responsável foram versionadas durante a v0.1.0. O modelo documental 3.1 passou a exigir uma decisão explícita de visibilidade, tomada por projeto.
+
+## Problema
+Instruções de agente, contexto e citações de conversa são pessoais e não fazem parte do produto.
+
+## Decisão
+- **Ignorados** (só na máquina local): `AGENTS.md`, `CLAUDE.md` e `workspace/`.
+- **Versionados:** `docs/`, `schemas/` e `metadata/`, porque mostram o processo de engenharia e as métricas por versão.
+- **Histórico:** não é reescrito. Os arquivos ignorados continuam visíveis nos commits anteriores a `9ac864d`.
+- **Rastreabilidade:** os hashes de proposta e feedback em `metadata` referem-se às cópias locais desses arquivos.
+
+## Motivação
+Preserva a privacidade daqui em diante sem a operação destrutiva de reescrever o histórico publicado.
+
+## Alternativas consideradas
+### Alternativa A
+- Descrição: reescrever o histórico para remover os arquivos de todos os commits.
+- Vantagens: remoção completa.
+- Desvantagens: muda todos os hashes, inclusive os registrados em `metadata` e na tag `v0.1.0`; exige `push --force`.
+- Motivo da rejeição: escolha do responsável.
+
+## Consequências
+### Positivas
+- Novas versões não publicam material pessoal.
+### Negativas
+- Commits antigos continuam expondo os arquivos.
+### Riscos
+- Algum arquivo pessoal novo ser criado fora dos caminhos ignorados. Mitigação: o modelo 3.1 exige a pergunta de visibilidade.
+
+## Documentos afetados
+- `.gitignore`.
+
+## Código ou módulos afetados
+- Nenhum.
+
+## Critério para revisar esta decisão
+Pedido de remoção completa do histórico ou repositório tornado privado.
+
+## Substitui
+- Nenhuma.
+
+## Substituída por
+- Nenhuma.

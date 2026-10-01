@@ -3,7 +3,7 @@
 # PROJECT_KNOWLEDGE_DB.md
 
 ## Contrato de referência
-O contrato de `metadata` (entidades, vocabulários, regras de preenchimento, projeções e consultas obrigatórias) é o de `templates/docs/project_knowledge/PROJECT_KNOWLEDGE_DB.md` no modelo documental v3.0 (StudyLab, commit `563d17c`). Este documento registra somente as escolhas locais.
+O contrato de `metadata` (entidades, vocabulários, regras de preenchimento, projeções e consultas obrigatórias) é o de `templates/docs/project_knowledge/PROJECT_KNOWLEDGE_DB.md` no modelo documental v3.0 (StudyLab, commit `563d17c`); a visibilidade dos artefatos segue a v3.1 (DECISION-012). Este documento registra somente as escolhas locais.
 
 ## Instância
 - Arquivo: `metadata/metadata.sqlite3`.
